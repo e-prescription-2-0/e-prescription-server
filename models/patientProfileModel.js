@@ -6,12 +6,13 @@ const PatientProfileSchema = new Schema({
     type: String,
     required: true,
   },
-  secondName: {
+  lastName: {
     type: String,
     required: true,
   },
   dateOfBird: {
     type: Date,
+    required: false,
   },
   personId: {
     type: String,
