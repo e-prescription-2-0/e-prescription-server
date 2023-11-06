@@ -19,15 +19,14 @@ app.post('/', (req, res)=>{
     res.send(req.body)
 });
 
-app.post('/user/add', async (req, res)=>{
+app.post('/users/add', async (req, res)=>{
     const user = new User(req.body)
-    const newUser = await user.save()
     try {
         await user.save();
         res.status(201)
         res.send(user);
       } catch (error) {
-        res.status(500).send('Not created');
+        res.status(500).send(error);
       }
 });
 
@@ -36,7 +35,7 @@ app.get("/users", async (request, response) => {
     try {
       response.send(users);
     } catch (error) {
-      response.status(500).send('Not created');
+      response.status(500).send(error);
     }
   });
 
