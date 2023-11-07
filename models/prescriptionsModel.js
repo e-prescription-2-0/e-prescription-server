@@ -10,7 +10,7 @@ const PrescriptionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "DoctorProfile",
   },
-  prescriptions: [
+  medicals: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Medical",

@@ -6,6 +6,11 @@ const MedicalSchema = new Schema({
     type: String,   
     required: true,
   },
+  prescriptionId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Prescription",
+
+  },
   maxQuantity: {
     type: Number,
     required: true,
