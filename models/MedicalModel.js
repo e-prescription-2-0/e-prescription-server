@@ -6,10 +6,14 @@ const MedicalSchema = new Schema({
     type: String,   
     required: true,
   },
-  quantity: {
+  maxQuantity: {
     type: Number,
     required: true,
   },
+  completedQuantity:{
+    type:Number,
+    default: 0
+  }
 });
 
 module.exports = mongoose.model("Medical", MedicalSchema);

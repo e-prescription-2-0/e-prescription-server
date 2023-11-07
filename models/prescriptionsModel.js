@@ -6,7 +6,7 @@ const PrescriptionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "PatientProfile",
   },
-  userId: {
+  doctorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "DoctorProfile",
   },
@@ -16,6 +16,19 @@ const PrescriptionSchema = new Schema({
       ref: "Medical",
     },
   ],
+  completed:{
+    type: Boolean,
+    default: false
+  },
+  validPeriod:{
+    type: Date,
+    default: ()=>{
+      const currentDate = new Date();
+      currentDate.setMonth(currentDate.getMonth() + 6);
+      return currentDate;
+    }
+    
+  }
 });
 
 module.exports = mongoose.model("Prescription", PrescriptionSchema);
