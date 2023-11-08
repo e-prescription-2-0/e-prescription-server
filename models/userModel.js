@@ -3,15 +3,18 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
-  username: {
+  firstName: {
     type: String,
     required: true,
-    unique: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: false,
+    unique: true,
   },
 
   password: {
@@ -23,7 +26,7 @@ const userSchema = new Schema({
     enum: ["patient", "pharmacist ", "doctor"], // Define the available roles
     default: "patient", // Set a default role if necessary
   },
-  date: {
+  CreatedOn: {
     type: String,
     default: Date(),
     required: true,

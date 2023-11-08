@@ -1,23 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const User = require("./userModel");
+
 const PharmacistProfileSchema = new Schema({
-  firstName: {
+  pharmacy: {
     type: String,
     required: true,
   },
-  secondName: {
-    type: String,
-    required: true,
-  },
-  dateOfBird: {
-    type: Date,
-  },
-  workCode: {
+  licenseNumber: {
     type: String,
     unique: true,
     required: true,
   },
 });
 
-module.exports = mongoose.model("PharmacistProfile", PharmacistProfileSchema);
+module.exports = User.discriminator(
+  "PharmacistProfile",
+  PharmacistProfileSchema
+);

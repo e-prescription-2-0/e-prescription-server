@@ -1,19 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const User = require("./userModel");
+
 const PatientProfileSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  dateOfBird: {
-    type: Date,
-    required: false,
-  },
   personId: {
     type: String,
     unique: true,
@@ -25,6 +15,14 @@ const PatientProfileSchema = new Schema({
       ref: "Prescription", // Reference the User model
     },
   ],
+  dateOfBird: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+    enum: ["Male", "Female"],
+    require: true,
+  },
 });
 
-module.exports = mongoose.model("PatientProfile", PatientProfileSchema);
+module.exports = User.discriminator("PatientProfile", PatientProfileSchema);

@@ -1,36 +1,28 @@
 const express = require('express');
 const router = express.Router();
 
-const User = require('../models/userModel');
-const Doctor = require('../models/doctorProfileModel');
-const Pharmacist = require('../models/pharmacistProfileModel');
-const Patient = require('../models/patientProfileModel');
 
-const RolesProfiles = {
-    pharmacist: Pharmacist,
-    doctor: Doctor,
-    patient: Patient
-  }
+const User = require('../models/userModel')
+const UserTypes = {
+  doctor: require('../models/doctorProfileModel'),
+  pharmacist:  require('../models/pharmacistProfileModel'),
+  patient: require('../models/patientProfileModel')
+}
 
 app.post('/register', async (req, res)=>{
     const {username, email, password, role, profileInfo} = req.body
-    let user, profile;
+    let user;
     if(username, email, password, role, profileInfo){
-      user = new User({username, email, password, role})
-      profile = new RolesProfiles[role](profileInfo)
+      user = new UserTypes[role]({username, email, password, role, ...profileInfo})
     }
 
     try { 
         
         await user.save();
-        console.log(user)
-        await profile.save()
-        console.log(profile)
-        
         res.status(201)
         res.send(user);
+
       } catch (error) {
-        console.log(error)
         res.status(500).send(error);
       }
 });
@@ -44,7 +36,7 @@ app.get("/", async (request, response) => {
     }
   });
 
-  router.delete('/:userId', async (req, res) => {
+  router.delete('/:userId/delete', async (req, res) => {
     const userId = req.params.userId;
   
     try {

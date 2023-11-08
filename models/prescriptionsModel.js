@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PrescriptionSchema = new Schema({
-  patientId: {
+  prescribedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "PatientProfile",
   },
-  doctorId: {
+  prescribedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "DoctorProfile",
   },
@@ -27,7 +27,6 @@ const PrescriptionSchema = new Schema({
       currentDate.setMonth(currentDate.getMonth() + 6);
       return currentDate;
     }
-    
   }
 });
 

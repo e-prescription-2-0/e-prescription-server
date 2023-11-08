@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Prescription = require("../models/prescriptionsModel");
-const Medical = require("../models/medicalModel");
+const Medicine = require("../models/medicalModel");
 
 // Define your route handlers
 router.get("/", async (req, res) => {
@@ -24,6 +24,31 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.post("/create", async (req, res) => {
+  const {prescriptionBy, prescriptionTo, medicals} = req.body
+  try{
+    const prescription = await Prescription.create({prescribedBy, prescribedTo})
+
+    if(prescription){
+      const savedMedicals = await Promise.all(
+        medicals.map(async (medicineInfo)=>{
+          const medicine = await Medicine.create(medicineInfo)
+          return medicals._id
+        }
+
+        )
+      )
+      prescription.medicals.push(...savedMedicals)
+      prescription.save()
+    }
+    
+  }catch(error){
+    res
+    .status(500)
+    .json({ message: "Error creating prescription", error: error.message });
+  }
+
+});
 router.delete("/:id/delete", async (req, res) => {
   try {
     const prescription = await Prescription.findByIdAndRemove(req.params.id);
@@ -43,37 +68,34 @@ router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
     const updatedMedicals = req.body.medicals; // An array of updated medical subdocuments
-    const prescription = await Prescription.findById(prescriptionId);
+    const prescription = await Prescription.findById(prescriptionId).populate(
+      "medicals"
+    );
 
     if (!prescription) {
       return res.status(404).json({ message: "Prescription not found" });
     }
     // Update the medicals in the prescription
     await Promise.all(
-      updatedMedicals.map(async (updatedMedical) => {
-        
-        const medical = await Medical.findById(updatedMedical._id);
-        if (medical && medical.prescriptionId === prescriptionId) {
-            // Update the completedQuantity for the medical
-            medical.completedQuantity = updatedMedical.completedQuantity;
-            await medical.save();
-            }
-        
-        // Find the corresponding medical subdocument by _id
-
-        
+      prescription.medicals.map(async (medicine) => {
+        if (updatedMedicals.include(medical._id)) {
+          // Update the completedQuantity for the medical
+          medicine.completed = true;
+        }
       })
     );
 
     // Check if all medicals have completedQuantity equal to zero
-    const allMedicalsCompleted = updatedMedicals.every(
-      (updatedMedical) => updatedMedical.completedQuantity === 0
+    const allMedicalsCompleted = prescription.medicals.every(
+      (updatedMedical) => updatedMedical.completed === true
     );
+
+    // Find and update the prescription's completed field based on all Medicals Completed
+
     if (allMedicalsCompleted) {
       prescription.completed = true;
-      prescription.save();
     }
-    // Find and update the prescription's completed field based on allMedicalsCompleted
+    prescription.save();
 
     res.json(prescription);
   } catch (error) {
@@ -83,28 +105,29 @@ router.patch("/:id/complete/partial", async (req, res) => {
   }
 });
 
-
 router.patch("/:id/complete", async (req, res) => {
-    try{
-        const prescriptionId = req.params.id;
-        const prescription = await Prescription.findById(prescriptionId);
+  try {
+    const prescriptionId = req.params.id;
+    const prescription = await Prescription.findById(prescriptionId).populate(
+      "medicals"
+    );
+    const completed = req.body.completed;
 
-        
-        await Promise.all(prescription.medicals.map(async (medicalId)=>{
-            const medical = await Medical.findByIdAndUpdate(prescriptionId, {completedQuantity: 0} , { new: true });
-        }))
+    if (completed === true) {
+      await Promise.all(
+        prescription.medicals.map(async (medical) => {
+          medical.completed = true;
+        })
+      );
+    }
 
-        prescription.completed = req.body.completed
-        prescription.save()
-    
-
-    }catch(error){
-        res
+    prescription.completed = completed;
+    prescription.save();
+  } catch (error) {
+    res
       .status(500)
       .json({ message: "Error completing prescription", error: error.message });
-
-    }
-})
-
+  }
+});
 
 module.exports = router;

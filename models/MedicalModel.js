@@ -1,24 +1,23 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const MedicalSchema = new Schema({
-  name: {
-    type: String,   
+const MedicineSchema = new Schema({
+  medicineName: {
+    type: String,
     required: true,
   },
-  prescriptionId:{
+  prescriptionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Prescription",
-
   },
-  maxQuantity: {
-    type: Number,
-    required: true,
+  signature: {
+    type: String,
+    required: false,
   },
-  completedQuantity:{
-    type:Number,
-    default: 0
-  }
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Medical", MedicalSchema);
