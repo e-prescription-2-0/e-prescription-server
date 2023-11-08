@@ -4,6 +4,7 @@
   "description": "server-features",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/e-prescription-2-0/e-prescription-server/issues"
   },
-  "homepage": "https://github.com/e-prescription-2-0/e-prescription-server#readme"
+  "homepage": "https://github.com/e-prescription-2-0/e-prescription-server#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
 }
