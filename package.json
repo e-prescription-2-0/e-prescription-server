@@ -1,0 +1,19 @@
+{
+  "name": "e-prescription-2.0-server",
+  "version": "1.0.0",
+  "description": "server-features",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e-prescription-2-0/e-prescription-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/e-prescription-2-0/e-prescription-server/issues"
+  },
+  "homepage": "https://github.com/e-prescription-2-0/e-prescription-server#readme"
+}
