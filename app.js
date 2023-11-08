@@ -8,7 +8,7 @@ require('./database')
 
 
 const prescriptionsRoutes = require('./routes/prescriptions');
-const userRoutes = require('./routes/index');
+const userRoutes = require('./routes/users');
 
 
 
