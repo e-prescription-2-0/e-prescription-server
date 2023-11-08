@@ -9,24 +9,26 @@ const UserTypes = {
 };
 
 router.post("/register", async (req, res) => {
-  const { username, email, password, role, profileInfo } = req.body;
-  let user;
-  if ((username, email, password, role, profileInfo)) {
-    user = new UserTypes[role]({
-      username,
-      email,
-      password,
-      role,
-      ...profileInfo,
-    });
-  }
-
   try {
+    const { firstName, lastName, username, email, password, role, profileInfo } = req.body;
+    let user;
+    if (( firstName, lastName, username, email, password, role, profileInfo)) {
+      user = new UserTypes[role]({
+        firstName,
+        lastName, 
+        username,
+        email,
+        password,
+        role,
+        ...profileInfo,
+      });
+    }
+
     await user.save();
     res.status(201);
     res.send(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send(error);
   }
 });
@@ -57,12 +59,10 @@ router.delete("/:userId/delete", async (req, res) => {
 
     res.json({ message: "User and profile deleted successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error deleting user and profile",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error deleting user and profile",
+      error: error.message,
+    });
   }
 });
 
