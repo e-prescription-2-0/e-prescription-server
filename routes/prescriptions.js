@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const prescription = await Prescription.findById(req.params.id);
+    const prescription = await Prescription.findById(req.params.id).populate('medicals');
     if (!prescription) {
       return res.status(404).json({ message: "Prescription not found" });
     }
@@ -24,31 +24,41 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+
 router.post("/create", async (req, res) => {
-  const {prescriptionBy, prescriptionTo, medicals} = req.body
-  try{
-    const prescription = await Prescription.create({prescribedBy, prescribedTo})
+  console.log("it works");
+  const { prescribedBy, prescribedTo, medicals } = req.body;
+  try {
+    const prescription = await Prescription.create({
+      prescribedTo,
+      prescribedBy,
+    });
 
-    if(prescription){
+    if (prescription) {
       const savedMedicals = await Promise.all(
-        medicals.map(async (medicineInfo)=>{
-          const medicine = await Medicine.create(medicineInfo)
-          return medicals._id
-        }
-
-        )
-      )
-      prescription.medicals.push(...savedMedicals)
-      prescription.save()
+        medicals.map(async (medicineInfo) => {
+          const medicine = await Medicine.create({
+            ...medicineInfo,
+            prescriptionId: prescription._id,
+          });
+          return medicine._id;
+        })
+      );
+      prescription.medicals.push(...savedMedicals);
+      prescription.save();
+      res.status(201).json(prescription);
+    } else {
+      res.status(500).json({ message: "Error creating prescription" });
     }
-    
-  }catch(error){
+  } catch (error) {
     res
-    .status(500)
-    .json({ message: "Error creating prescription", error: error.message });
+      .status(500)
+      .json({ message: "Error creating prescription", error: error.message });
   }
-
 });
+
+
+
 router.delete("/:id/delete", async (req, res) => {
   try {
     const prescription = await Prescription.findByIdAndRemove(req.params.id);
@@ -64,10 +74,12 @@ router.delete("/:id/delete", async (req, res) => {
   }
 });
 
+
+
 router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
-    const updatedMedicals = req.body.medicals; // An array of updated medical subdocuments
+    const updatedMedicalsIds = req.body.medicals; // An array of updated medical
     const prescription = await Prescription.findById(prescriptionId).populate(
       "medicals"
     );
@@ -76,17 +88,26 @@ router.patch("/:id/complete/partial", async (req, res) => {
       return res.status(404).json({ message: "Prescription not found" });
     }
     // Update the medicals in the prescription
-    await Promise.all(
+    const allMedicals = await Promise.all(
       prescription.medicals.map(async (medicine) => {
-        if (updatedMedicals.include(medical._id)) {
-          // Update the completedQuantity for the medical
+
+        if (updatedMedicalsIds.includes(String(medicine._id))) {
+          // Update the completed for the medical
           medicine.completed = true;
+          medicine.save()
+          return medicine;
+        } else {
+          return medicine;
         }
+
       })
+
     );
 
+    prescription.medicals = allMedicals;
+
     // Check if all medicals have completedQuantity equal to zero
-    const allMedicalsCompleted = prescription.medicals.every(
+    const allMedicalsCompleted = allMedicals.every(
       (updatedMedical) => updatedMedical.completed === true
     );
 
@@ -95,6 +116,7 @@ router.patch("/:id/complete/partial", async (req, res) => {
     if (allMedicalsCompleted) {
       prescription.completed = true;
     }
+    console.log(prescription)
     prescription.save();
 
     res.json(prescription);
@@ -105,6 +127,9 @@ router.patch("/:id/complete/partial", async (req, res) => {
   }
 });
 
+
+
+
 router.patch("/:id/complete", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
@@ -112,17 +137,22 @@ router.patch("/:id/complete", async (req, res) => {
       "medicals"
     );
     const completed = req.body.completed;
-
+    
     if (completed === true) {
-      await Promise.all(
+      const  allMedicals =await Promise.all(
         prescription.medicals.map(async (medical) => {
           medical.completed = true;
+          medical.save()
+          return medical
         })
+        
       );
+      prescription.medicals = allMedicals
     }
-
     prescription.completed = completed;
     prescription.save();
+    res.status(201).json(prescription)
+
   } catch (error) {
     res
       .status(500)
