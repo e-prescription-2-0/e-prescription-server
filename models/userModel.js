@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const bcrypt = require("bcrypt");
-const PasswordPreSaveHook = require("../utils/PasswordHashing");
+
+
 
 const userSchema = new Schema({
   firstName: {
@@ -34,6 +34,6 @@ const userSchema = new Schema({
   },
 });
 
-PasswordPreSaveHook(userSchema)
+
 
 module.exports = mongoose.model("User", userSchema);
