@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Prescription = require("../models/prescriptionsModel");
 const Medicine = require("../models/medicalModel");
+const User = require("../models/userModel");
 
 // Define your route handlers
 router.get("/", async (req, res) => {
@@ -26,14 +27,22 @@ router.get("/:id", async (req, res) => {
 
 
 router.post("/create", async (req, res) => {
-  console.log("it works");
-  const { prescribedBy, prescribedTo, medicals } = req.body;
+
   try {
+    const { prescribedBy, prescribedTo, medicals } = req.body;
+  
+    const patient = await User.findOne({ _id: prescribedTo, role: "patient" });
+    const doctor = await User.findOne({ _id: prescribedBy, role: "doctor" });
+  
+    if(!patient || !doctor){
+      throw new Error('Patient or Doctor does not exist')
+    }
+
     const prescription = await Prescription.create({
       prescribedTo,
       prescribedBy,
     });
-
+    
     if (prescription) {
       const savedMedicals = await Promise.all(
         medicals.map(async (medicineInfo) => {
@@ -45,12 +54,24 @@ router.post("/create", async (req, res) => {
         })
       );
       prescription.medicals.push(...savedMedicals);
-      prescription.save();
+      await prescription.save();
+      
+      patient.prescriptions = [...patient.prescriptions, prescription._id]
+      
+      doctor.prescriptions = [...doctor.prescriptions, prescription._id]
+
+    
+      
+      
+      await patient.save()
+      await doctor.save()
+
       res.status(201).json(prescription);
     } else {
       res.status(500).json({ message: "Error creating prescription" });
     }
   } catch (error) {
+    console.log(error)
     res
       .status(500)
       .json({ message: "Error creating prescription", error: error.message });

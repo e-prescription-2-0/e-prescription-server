@@ -2,12 +2,14 @@ const router = require('express').Router();
 
 const test = require('./test');
 const users = require('./users')
-const prescription = require('./prescriptions')
+const prescriptions = require('./prescriptions')
+const patients = require('./patients')
 
 
 router.use('/test', test);
 router.use('/user', users );
-router.use('/prescription', prescription)
+router.use('/prescriptions', prescriptions)
+router.use('/patients', patients)
 
 
 
