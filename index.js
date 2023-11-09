@@ -1,3 +1,4 @@
+require('dotenv').config()
 const dbConnector = require('./config/db');
 const apiRouter = require('./router');
 
