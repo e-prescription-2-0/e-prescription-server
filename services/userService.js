@@ -20,16 +20,13 @@ const register = async (firstName, lastName, username, email, password, role, pr
     throw new Error ('Email is already exist')
 }
       
-    const hashedPassword = await bcrypt.hash(password, 7)
     const createdUser = await model.create( {
-      firstName, lastName, username, email, password:hashedPassword, role, ...profileInfo})
+      firstName, lastName, username, email, password, role, ...profileInfo})
       let user = bsonToJson(createdUser);
       user = removePassword(user)
       const token = createSession(user);
 
-     return Object.assign(token,user )
- 
-      
+     return Object.assign(token,user ) 
 }
 
 

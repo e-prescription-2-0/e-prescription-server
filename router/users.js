@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {register} = require('../services/userService');
+const userModel = require('../models/userModel');
 
+const User = userModel
 
 
 
@@ -34,5 +36,45 @@ router.post('/register', async (req, res) => {
   });
 
 
+router.delete("/:userId/delete", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // Find and delete the user by their ID
+    const user = await User.findByIdAndRemove(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User and profile deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting user and profile",
+      error: error.message,
+    });
+  }
+});
+
+
+router.get("/profile/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // Find and delete the user by their ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error user access",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router
