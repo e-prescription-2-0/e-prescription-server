@@ -5,11 +5,11 @@ const User = require("../models/userModel");
 
 router.get("/", async (req, res) => {
   try {
-    const doctors = await User.find({ role: "doctor" })
-  .select("firstName lastName email role  specialty")
+    const pharmacists = await User.find({ role: "pharmacist" })
+  .select("firstName lastName email role pharmacy")
   .exec();
 
-    res.status(200).json(doctors);
+    res.status(200).json(pharmacists);
   } catch (error) {
     res.status(404).json({ message: error });
   }
@@ -17,13 +17,13 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const doctorId = req.params.id;
-    const doctor = await User.findById(doctorId);
+    const pharmacistId = req.params.id;
+    const pharmacist = await User.findById(pharmacistId);
 
-    if (!doctor) {
+    if (!pharmacist) {
       throw new Error("Patient is not found");
     }
-    res.status(200).json(doctor);
+    res.status(200).json(pharmacist);
   } catch (error) {
     res.status(404).json({ message: error });
   }
