@@ -8,7 +8,7 @@ const {userTokenName} = require('../config/app-config');
 const UserTypes = {
   doctor: require("../models/doctorsModel"),
   pharmacist: require("../models/pharmacistModel"),
-  patient: require("../models/patitentModel"),
+  patient: require("../models/patientModel"),
 };
 
 

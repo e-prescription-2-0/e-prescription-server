@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Prescription = require("../models/prescriptionsModel");
-const Medicine = require("../models/MedicalModel");
+const Medicine = require("../models/medicalModel");
 const User = require("../models/userModel");
 
 // Define your route handlers
