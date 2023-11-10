@@ -18,7 +18,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const doctor = await User.findById(doctorId);
+    const doctor = await User.findById(doctorId)
+    .select("firstName lastName email role  specialty")
+    .exec();
 
     if (!doctor) {
       throw new Error("Patient is not found");
