@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { register } = require("../services/userService");
+const { register, login } = require("../services/userService");
 const userModel = require("../models/userModel");
 
 const User = userModel;
@@ -37,9 +37,30 @@ router.post("/register", async (req, res) => {
     res.json(user);
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    res.status(401).send({error:error.message});
   }
 });
+
+router.post('/login', async (req,res) => {
+  
+
+  if (Object.values(req.body).some((f) => f == "")) {
+    throw new Error("All fields are required");
+  }
+  const {email, password} = req.body
+  try {
+
+    const user = await login(email, password);
+    res.status(201);
+    res.json(user);
+    
+  } catch (error) {
+    console.log(error);
+    res.status(401).send({error:error.message})
+  }
+
+
+})
 
 router.delete("/:userId/delete", async (req, res) => {
   const userId = req.params.userId;

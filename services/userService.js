@@ -5,10 +5,12 @@ const {userTokenName} = require('../config/app-config');
 
 
 
+
 const UserTypes = {
   doctor: require("../models/doctorsModel"),
   pharmacist: require("../models/pharmacistModel"),
   patient: require("../models/patitentModel"),
+  user : require('../models/userModel')
 };
 
 
@@ -27,6 +29,21 @@ const register = async (firstName, lastName, username, email, password, role, pr
       const token = createSession(user);
 
      return Object.assign(token,user ) 
+};
+
+const login = async (email, password) => {
+    
+
+ let user =  await UserTypes.user.findOne({ email }).collation({locale:'en', strength:2});
+
+      if(!user) {throw new Error('Email doesnt exist or password is incorrect!')};
+      const passwordCheck = await bcrypt.compare(password, user.password);  
+      if(!passwordCheck)  {throw new Error('Email doesnt exist or password is incorrect!')};
+      user = bsonToJson(user);
+      user = removePassword(user);
+      const token = createSession(user);
+
+      return Object.assign(token,user ) 
 }
 
 
@@ -53,5 +70,6 @@ const removePassword = (data) => {
 
 
     module.exports = {
-      register
+      register,
+      login
     }
