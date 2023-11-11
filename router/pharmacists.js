@@ -11,7 +11,8 @@ router.get("/", async (req, res) => {
 
     res.status(200).json(pharmacists);
   } catch (error) {
-    res.status(404).json({ message: error });
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(404).json({ message: errorMessage });
   }
 });
 
@@ -27,7 +28,8 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(pharmacist);
   } catch (error) {
-    res.status(404).json({ message: error });
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(404).json({ message: errorMessage });
   }
 });
 

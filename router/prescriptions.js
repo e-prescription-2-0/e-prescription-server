@@ -21,9 +21,10 @@ router.get("/:id", async (req, res) => {
     }
     res.send(prescription);
   } catch {
+    const errorMessage = error.message || "Internal Server Error";
     res
       .status(500)
-      .json({ message: "Error retrieving prescription", error: error.message });
+      .json({ message: errorMessage });
   }
 });
 
@@ -68,10 +69,10 @@ router.post("/create", async (req, res) => {
       res.status(500).json({ message: "Error creating prescription" });
     }
   } catch (error) {
-    console.log(error);
+    const errorMessage = error.message || "Internal Server Error";
     res
       .status(500)
-      .json({ message: "Error creating prescription", error: error.message });
+      .json({ message: errorMessage });
   }
 });
 
@@ -84,9 +85,10 @@ router.delete("/:id/delete", async (req, res) => {
 
     res.json({ message: "Prescription deleted successfully" });
   } catch {
+    const errorMessage = error.message || "Internal Server Error";
     res
       .status(500)
-      .json({ message: "Error deleting prescription", error: error.message });
+      .json({ message: errorMessage });
   }
 });
 
@@ -132,9 +134,10 @@ router.patch("/:id/complete/partial", async (req, res) => {
 
     res.json(prescription);
   } catch (error) {
+    const errorMessage = error.message || "Internal Server Error";
     res
       .status(500)
-      .json({ message: "Error updating prescription", error: error.message });
+      .json({ message: errorMessage });
   }
 });
 
@@ -160,9 +163,10 @@ router.patch("/:id/complete", async (req, res) => {
     prescription.save();
     res.status(201).json(prescription);
   } catch (error) {
+    const errorMessage = error.message || "Internal Server Error";
     res
       .status(500)
-      .json({ message: "Error completing prescription", error: error.message });
+      .json({ message: errorMessage});
   }
 });
 

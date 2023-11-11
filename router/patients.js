@@ -12,7 +12,8 @@ router.get("/:id", async (req, res) => {
     }
     res.status(200).json(user);
   } catch (error) {
-    res.status(404).json({ message: error });
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(404).json({ message: errorMessage });
   }
 });
 
@@ -25,12 +26,13 @@ router.get("/:id/prescriptions", async (req, res) => {
     })
       .populate("prescriptions")
       .select("prescriptions");
-    if (!user) {
-      throw new Error("Patient is not found");
+    if (!userPrescriptions) {
+      throw new Error("Unknown doctor");
     }
     res.status(200).json(userPrescriptions);
   } catch (error) {
-    res.status(404).json({ message: error });
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(404).json({ message: errorMessage });
   }
 });
 

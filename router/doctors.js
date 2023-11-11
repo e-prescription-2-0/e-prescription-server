@@ -23,11 +23,12 @@ router.get("/:id", async (req, res) => {
     .exec();
 
     if (!doctor) {
-      throw new Error("Patient is not found");
+      throw new Error("Unknown doctor");
     }
     res.status(200).json(doctor);
   } catch (error) {
-    res.status(404).json({ message: error });
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(404).json({ message: errorMessage});
   }
 });
 

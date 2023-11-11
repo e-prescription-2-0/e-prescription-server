@@ -22,7 +22,7 @@ const register = async (
     .findOne({ email })
     .collation({ locale: "en", strength: 2 });
   if (existing) {
-    throw new Error("Email is already exist");
+    throw new Error("Email is already in use");
   }
 
   const createdUser = await model.create({
