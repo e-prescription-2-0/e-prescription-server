@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
-const User = require("../models/userModel");
+const { getAllDoctorsInfo, getSingleDoctorInfo } = require("../services/doctorService");
 
 router.get("/", async (req, res) => {
   try {
-    const doctors = await User.find({ role: "doctor" })
-  .select("firstName lastName email role  specialty")
-  .exec();
+    const doctors =  await getAllDoctorsInfo()
 
     res.status(200).json(doctors);
   } catch (error) {
@@ -18,10 +15,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const doctor = await User.findById(doctorId)
-    .select("firstName lastName email role  specialty")
-    .exec();
-
+    const doctor = await getSingleDoctorInfo(doctorId)
     if (!doctor) {
       throw new Error("Unknown doctor");
     }
