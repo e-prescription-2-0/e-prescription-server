@@ -1,13 +1,11 @@
 const express = require("express");
+const { getAllPharmacistInfo, getPharmacistInfo } = require("../services/pharmacistService");
 const router = express.Router();
 
-const User = require("../models/userModel");
 
 router.get("/", async (req, res) => {
   try {
-    const pharmacists = await User.find({ role: "pharmacist" })
-      .select("firstName lastName email role pharmacy")
-      .exec();
+    const pharmacists = await getAllPharmacistInfo()
 
     res.status(200).json(pharmacists);
   } catch (error) {
@@ -19,9 +17,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const pharmacistId = req.params.id;
-    const pharmacist = await User.findById(pharmacistId)
-    .select("firstName lastName email role pharmacy")
-    .exec();
+    const pharmacist = await getPharmacistInfo(pharmacistId)
 
     if (!pharmacist) {
       throw new Error("Patient is not found");
