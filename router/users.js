@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { register, login } = require("../services/userService");
 const userModel = require("../models/userModel");
+const auth = require("../middlewares/auth");
+
 
 const User = userModel;
 
@@ -61,6 +63,14 @@ router.post('/login', async (req,res) => {
 
 
 })
+
+
+router.get('/logout', auth, (req, res) => {
+ 
+  res.status(200).json({ message: 'Logged out successfully' });
+});
+
+
 
 router.delete("/:userId/delete", async (req, res) => {
   const userId = req.params.userId;
