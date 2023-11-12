@@ -1,11 +1,13 @@
 const express = require("express");
-const { getAllPharmacistInfo, getPharmacistInfo } = require("../services/pharmacistService");
+const {
+  getAllPharmacistsInfo,
+  getPharmacistInfo,
+} = require("../services/pharmacistService");
 const router = express.Router();
-
 
 router.get("/", async (req, res) => {
   try {
-    const pharmacists = await getAllPharmacistInfo()
+    const pharmacists = await getAllPharmacistsInfo();
 
     res.status(200).json(pharmacists);
   } catch (error) {
@@ -17,10 +19,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const pharmacistId = req.params.id;
-    const pharmacist = await getPharmacistInfo(pharmacistId)
+    const pharmacist = await getPharmacistInfo(pharmacistId);
 
     if (!pharmacist) {
-      throw new Error("Patient is not found");
+      throw new Error("Unknown pharmacist");
     }
     res.status(200).json(pharmacist);
   } catch (error) {

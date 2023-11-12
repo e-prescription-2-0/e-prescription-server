@@ -1,19 +1,16 @@
 const User = require("../models/userModel");
 
-const getAllDoctorsInfo = async () => {
-  const doctors = await User.find({ role: "doctor" })
-    .select("firstName lastName email role  specialty")
+const getAllDoctorsInfo = async () =>
+  await User.find({ role: "doctor" })
+    .select("firstName lastName email role specialty")
     .exec();
-  return doctors;
-};
 
-const getSingleDoctorInfo = async (doctorId)=>{
-    const doctor = await User.findById(doctorId)
-    .select("firstName lastName email role  specialty")
+const getDoctorInfo = async (doctorId) =>
+  await User.findById(doctorId)
+    .select("firstName lastName email role specialty")
     .exec();
-    return doctor
-}
+
 module.exports = {
-    getAllDoctorsInfo,
-    getSingleDoctorInfo
-}
+  getAllDoctorsInfo,
+  getDoctorInfo,
+};

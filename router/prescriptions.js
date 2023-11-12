@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const Prescription = require("../models/prescriptionsModel");
-const Medicine = require("../models/medicalModel");
+const Medicine = require("../models/medicineModel");
 const User = require("../models/userModel");
 const {
   getAllPrescriptions,
-  getSinglePrescription,
+  getPrescription,
   createPrescription,
   deletePrescription,
   completePartialPrescription,
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const prescription = await getSinglePrescription();
+    const prescription = await getPrescription();
     res.send(prescription);
   } catch {
     const errorMessage = error.message || "Internal Server Error";
@@ -31,11 +31,11 @@ router.get("/:id", async (req, res) => {
 
 router.post("/create", async (req, res) => {
   try {
-    const { prescribedBy, prescribedTo, medicals } = req.body;
+    const { prescribedBy, prescribedTo, medicines } = req.body;
     const prescription = await createPrescription(
       prescribedBy,
       prescribedTo,
-      medicals
+      medicines
     );
     if (prescription) {
       res.status(201).json(prescription);
@@ -65,10 +65,10 @@ router.delete("/:id/delete", async (req, res) => {
 router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
-    const updatedMedicalsIds = req.body.medicals; // An array of updated medical
+    const updatedMedicinesIds = req.body.medicines; // An array of updated medicines
     const prescription = await completePartialPrescription(
       prescriptionId,
-      updatedMedicalsIds
+      updatedMedicinesIds
     );
 
     res.json(prescription);

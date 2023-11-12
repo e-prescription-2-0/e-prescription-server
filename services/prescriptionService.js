@@ -1,15 +1,12 @@
 const Prescription = require("../models/prescriptionsModel");
-const Medicine = require("../models/medicalModel");
+const Medicine = require("../models/medicineModel");
 const User = require("../models/userModel");
 
-const getAllPrescriptions = async () => {
-  const prescriptions = await Prescription.find({});
-  return prescriptions;
-};
+const getAllPrescriptions = async () => await Prescription.find({});
 
-const getSinglePrescription = async () => {
+const getPrescription = async () => {
   const prescription = await Prescription.findById(req.params.id).populate(
-    "medicals"
+    "medicines"
   );
   if (!prescription) {
     throw new Error("Prescription not found");
@@ -17,7 +14,7 @@ const getSinglePrescription = async () => {
   return prescription;
 };
 
-const createPrescription = async (prescribedBy, prescribedTo, medicals) => {
+const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
   const patient = await User.findOne({ _id: prescribedTo, role: "patient" });
   const doctor = await User.findOne({ _id: prescribedBy, role: "doctor" });
 
@@ -34,8 +31,8 @@ const createPrescription = async (prescribedBy, prescribedTo, medicals) => {
     throw new Error("Error creating prescription");
   }
 
-  const savedMedicals = await Promise.all(
-    medicals.map(async (medicineInfo) => {
+  const savedMedicines = await Promise.all(
+    medicines.map(async (medicineInfo) => {
       const medicine = await Medicine.create({
         ...medicineInfo,
         prescriptionId: prescription._id,
@@ -43,7 +40,7 @@ const createPrescription = async (prescribedBy, prescribedTo, medicals) => {
       return medicine._id;
     })
   );
-  prescription.medicals.push(...savedMedicals);
+  prescription.medicines.push(...savedMedicines);
   await prescription.save();
 
   patient.prescriptions = [...patient.prescriptions, prescription._id];
@@ -63,19 +60,19 @@ const deletePrescription = async (prescriptionId) => {
 
 const completePartialPrescription = async (
   prescriptionId,
-  updatedMedicalsIds
+  updatedMedicinesIds
 ) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
-    "medicals"
+    "medicines"
   );
 
   if (!prescription) {
     throw new Error("Prescription not found");
   }
-  // Update the medicals in the prescription
-  const allMedicals = await Promise.all(
-    prescription.medicals.map(async (medicine) => {
-      if (updatedMedicalsIds.includes(String(medicine._id))) {
+  // Update the medicines in the prescription
+  const allMedicines = await Promise.all(
+    prescription.medicines.map(async (medicine) => {
+      if (updatedMedicinesIds.includes(String(medicine._id))) {
         // Update the completed for the medical
         medicine.completed = true;
         medicine.save();
@@ -86,16 +83,16 @@ const completePartialPrescription = async (
     })
   );
 
-  prescription.medicals = allMedicals;
+  prescription.medicines = allMedicines;
 
-  // Check if all medicals have completedQuantity equal to zero
-  const allMedicalsCompleted = allMedicals.every(
+  // Check if all medicines have completedQuantity equal to zero
+  const allMedicinesCompleted = allMedicines.every(
     (updatedMedical) => updatedMedical.completed === true
   );
 
-  // Find and update the prescription's completed field based on all Medicals Completed
+  // Find and update the prescription's completed field based on all medicines Completed
 
-  if (allMedicalsCompleted) {
+  if (allMedicinesCompleted) {
     prescription.completed = true;
   }
   prescription.save();
@@ -104,19 +101,19 @@ const completePartialPrescription = async (
 
 const completeFullPrescription = async (prescriptionId) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
-    "medicals"
+    "medicines"
   );
   const completed = req.body.completed;
 
   if (completed === true) {
-    const allMedicals = await Promise.all(
-      prescription.medicals.map(async (medical) => {
+    const allMedicines = await Promise.all(
+      prescription.medicines.map(async (medical) => {
         medical.completed = true;
         medical.save();
         return medical;
       })
     );
-    prescription.medicals = allMedicals;
+    prescription.medicines = allMedicines;
   }
   prescription.completed = completed;
   prescription.save();
@@ -124,7 +121,7 @@ const completeFullPrescription = async (prescriptionId) => {
 };
 module.exports = {
   getAllPrescriptions,
-  getSinglePrescription,
+  getPrescription,
   createPrescription,
   deletePrescription,
   completePartialPrescription,

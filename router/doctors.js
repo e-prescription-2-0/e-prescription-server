@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { getAllDoctorsInfo, getSingleDoctorInfo } = require("../services/doctorService");
+const {
+  getAllDoctorsInfo,
+  getDoctorInfo,
+} = require("../services/doctorService");
 
 router.get("/", async (req, res) => {
   try {
-    const doctors =  await getAllDoctorsInfo()
+    const doctors = await getAllDoctorsInfo();
 
     res.status(200).json(doctors);
   } catch (error) {
@@ -15,14 +18,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const doctorId = req.params.id;
-    const doctor = await getSingleDoctorInfo(doctorId)
+    const doctor = await getDoctorInfo(doctorId);
     if (!doctor) {
       throw new Error("Unknown doctor");
     }
     res.status(200).json(doctor);
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
-    res.status(404).json({ message: errorMessage});
+    res.status(404).json({ message: errorMessage });
   }
 });
 

@@ -1,12 +1,14 @@
 const express = require("express");
-const { getPatient, getPatientPrescriptions } = require("../services/patientServise");
+const {
+  getPatientInfo,
+  getPatientPrescriptions,
+} = require("../services/patientServise");
 const router = express.Router();
-
 
 router.get("/:id", async (req, res) => {
   try {
     const patientId = req.params.id;
-    const user = await getPatient(patientId)
+    const user = await getPatientInfo(patientId);
     if (!user) {
       throw new Error("Patient is not found");
     }
@@ -20,7 +22,7 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/prescriptions", async (req, res) => {
   try {
     const patientId = req.params.id;
-    const userPrescriptions = await getPatientPrescriptions(patientId)
+    const userPrescriptions = await getPatientPrescriptions(patientId);
     if (!userPrescriptions) {
       throw new Error("Unknown doctor");
     }

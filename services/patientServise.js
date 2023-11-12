@@ -1,24 +1,17 @@
 const User = require("../models/userModel");
 
+const getPatientInfo = async (patientId) =>
+  await User.findOne({ _id: patientId, role: "patient" });
 
-const getPatient = async (patientId)=>{
-    const user = await User.findOne({ _id: patientId, role: "patient" });
-    return user
-
-}
-
-const getPatientPrescriptions = async (patientId)=>{
-    const userPrescriptions = await User.findOne({
-        _id: patientId,
-        role: "patient",
-      })
-        .populate("prescriptions")
-        .select("prescriptions");
-    return userPrescriptions
-
-}
+const getPatientPrescriptions = async (patientId) =>
+  await User.findOne({
+    _id: patientId,
+    role: "patient",
+  })
+    .populate("prescriptions")
+    .select("prescriptions");
 
 module.exports = {
-    getPatient,
-    getPatientPrescriptions
-}
+  getPatientInfo,
+  getPatientPrescriptions,
+};
