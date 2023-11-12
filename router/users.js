@@ -3,11 +3,12 @@ const router = express.Router();
 const { register, login } = require("../services/userService");
 const userModel = require("../models/userModel");
 const auth = require("../middlewares/auth");
+const trimReqBody = require("../middlewares/trimBody");
 
 
 const User = userModel;
 
-router.post("/register", async (req, res) => {
+router.post("/register", trimReqBody, async (req, res) => {
   try {
     if (Object.values(req.body).some((f) => f == "")) {
       throw new Error("All fields are required");
@@ -35,15 +36,17 @@ router.post("/register", async (req, res) => {
       profileInfo
     );
 
+    
     res.status(201);
     res.json(user);
+    
   } catch (error) {
     console.log(error);
     res.status(401).send({error:error.message});
   }
 });
 
-router.post('/login', async (req,res) => {
+router.post('/login',trimReqBody, async (req,res) => {
   
 
   if (Object.values(req.body).some((f) => f == "")) {

@@ -24,8 +24,9 @@ const register = async (firstName, lastName, username, email, password, role, pr
       
     const createdUser = await model.create( {
       firstName, lastName, username, email, password, role, ...profileInfo})
-      let user = bsonToJson(createdUser);
-      user = removePassword(user)
+      
+      
+      let user = removePassword(createdUser.toObject())
       const token = createSession(user);
 
      return Object.assign(token,user ) 
@@ -39,8 +40,8 @@ const login = async (email, password) => {
       if(!user) {throw new Error('Email doesnt exist or password is incorrect!')};
       const passwordCheck = await bcrypt.compare(password, user.password);  
       if(!passwordCheck)  {throw new Error('Email doesnt exist or password is incorrect!')};
-      user = bsonToJson(user);
-      user = removePassword(user);
+    
+      user = removePassword(user.toObject());
       const token = createSession(user);
 
       return Object.assign(token,user ) 
@@ -62,7 +63,6 @@ const login = async (email, password) => {
     }
 
 
-const bsonToJson = (data) => { return JSON.parse(JSON.stringify(data)) };
 const removePassword = (data) => {
     const { password, __v, ...userData } = data;
     return userData
