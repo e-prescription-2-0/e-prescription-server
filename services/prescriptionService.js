@@ -60,11 +60,17 @@ const deletePrescription = async (prescriptionId) => {
 
 const completePartialPrescription = async (
   prescriptionId,
-  updatedMedicinesIds
+  updatedMedicinesIds,
+  pharmacistId
 ) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
     "medicines"
   );
+  const pharmacist = await User.findById(pharmacistId);
+
+  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+    throw new Error("Unknown pharmacist");
+  }
 
   if (!prescription) {
     throw new Error("Prescription not found");
@@ -74,7 +80,7 @@ const completePartialPrescription = async (
     prescription.medicines.map(async (medicine) => {
       if (updatedMedicinesIds.includes(String(medicine._id))) {
         // Update the completed for the medical
-        medicine.completed = true;
+        medicine.isCompleted = true;
         medicine.save();
         return medicine;
       } else {
@@ -87,15 +93,21 @@ const completePartialPrescription = async (
 
   // Check if all medicines have completedQuantity equal to zero
   const allMedicinesCompleted = allMedicines.every(
-    (updatedMedical) => updatedMedical.completed === true
+    (updatedMedical) => updatedMedical.isCompleted === true
   );
 
   // Find and update the prescription's completed field based on all medicines Completed
 
   if (allMedicinesCompleted) {
-    prescription.completed = true;
+    prescription.isCompleted = true;
   }
   prescription.save();
+
+  if (!pharmacist.prescriptions.includes(prescription._id)) {
+    pharmacist.prescriptions.push(prescription._id);
+  }
+  pharmacist.save();
+
   return prescription;
 };
 
@@ -103,20 +115,33 @@ const completeFullPrescription = async (prescriptionId) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
     "medicines"
   );
+
+  const pharmacist = await User.findById(pharmacistId);
+
+  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+    throw new Error("Unknown pharmacist");
+  }
+
   const completed = req.body.completed;
 
   if (completed === true) {
     const allMedicines = await Promise.all(
       prescription.medicines.map(async (medical) => {
-        medical.completed = true;
+        medical.isCompleted = true;
         medical.save();
         return medical;
       })
     );
     prescription.medicines = allMedicines;
   }
-  prescription.completed = completed;
+  prescription.isCompleted = completed;
   prescription.save();
+
+  if (!pharmacist.prescriptions.includes(prescription._id)) {
+    pharmacist.prescriptions.push(prescription._id);
+  }
+  pharmacist.save();
+
   return prescription;
 };
 module.exports = {

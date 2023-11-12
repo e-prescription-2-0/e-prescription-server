@@ -14,12 +14,7 @@ const PharmacistProfileSchema = new Schema({
     required: true,
   },
   patients: [],
-  prescriptions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prescriptions",
-    },
-  ],
+
 });
 
 module.exports = User.discriminator("Pharmacist", PharmacistProfileSchema);

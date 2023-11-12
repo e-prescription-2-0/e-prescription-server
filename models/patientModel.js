@@ -18,12 +18,7 @@ const PatientProfileSchema = new Schema({
     type: Date,
   },
   patientSpecifics: [],
-  prescriptions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prescription", // Reference the User model
-    },
-  ],
+ 
 });
 
 module.exports = User.discriminator("Patient", PatientProfileSchema);

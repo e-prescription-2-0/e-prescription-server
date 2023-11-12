@@ -66,9 +66,12 @@ router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
     const updatedMedicinesIds = req.body.medicines; // An array of updated medicines
+    const pharmacistId = req.user.id;
+
     const prescription = await completePartialPrescription(
       prescriptionId,
-      updatedMedicinesIds
+      updatedMedicinesIds,
+      pharmacistId
     );
 
     res.json(prescription);
@@ -81,7 +84,12 @@ router.patch("/:id/complete/partial", async (req, res) => {
 router.patch("/:id/complete", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
-    const prescription = await completeFullPrescription(prescriptionId);
+    const pharmacistId = req.user.id;
+
+    const prescription = await completeFullPrescription(
+      prescriptionId,
+      pharmacistId``
+    );
     res.status(201).json(prescription);
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";

@@ -31,6 +31,14 @@ const userSchema = new Schema({
     default: Date(),
     required: true,
   },
+
+  prescriptions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Prescription", // Reference the User model
+    },
+  ],
+  
 });
 
 PasswordPreSaveHook(userSchema);

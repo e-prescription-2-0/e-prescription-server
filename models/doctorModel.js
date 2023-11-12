@@ -22,12 +22,7 @@ const DoctorProfileSchema = new Schema({
       ref: "PatientProfile",
     },
   ],
-  prescriptions: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prescriptions", // Reference the User model
-    },
-  ],
+
 });
 
 module.exports = User.discriminator("Doctor", DoctorProfileSchema);

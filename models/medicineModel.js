@@ -14,7 +14,7 @@ const MedicineSchema = new Schema({
     type: String,
     required: false,
   },
-  completed: {
+  isCompleted: {
     type: Boolean,
     default: false,
   },
