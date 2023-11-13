@@ -124,12 +124,12 @@ const completeFullPrescription = async (prescriptionId) => {
 
   const completed = req.body.completed;
 
-  if (completed === true) {
+  if (completed) {
     const allMedicines = await Promise.all(
-      prescription.medicines.map(async (medical) => {
-        medical.isCompleted = true;
-        medical.save();
-        return medical;
+      prescription.medicines.map(async (medicine) => {
+        medicine.isCompleted = true;
+        medicine.save();
+        return medicine;
       })
     );
     prescription.medicines = allMedicines;
