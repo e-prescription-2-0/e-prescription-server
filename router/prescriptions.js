@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Prescription = require("../models/prescriptionsModel");
-const Medicine = require("../models/medicineModel");
-const User = require("../models/userModel");
+
 const {
   getAllPrescriptions,
   getPrescription,
@@ -11,6 +9,7 @@ const {
   deletePrescription,
   completePartialPrescription,
   completeFullPrescription,
+  updatePrescription,
 } = require("../services/prescriptionService");
 
 // Define your route handlers
@@ -62,6 +61,37 @@ router.delete("/:id/delete", async (req, res) => {
   }
 });
 
+router.patch("/:prescriptionId/update", async (req, res) => {
+  /* 
+  req.body example:
+
+  {
+    updatedPatient: patientId,
+    updatedMedicationsList:{
+      medicationsToAdd: [{medicineName, prescriptionId, signature}],
+      medicationsToRemove : [{_id}]
+    }
+  }
+
+  */
+  try {
+    const prescriptionId = req.params.prescriptionId
+    const updatedPatientId = req.body?.updatedPatientId
+    const updatedMedicationsList = req.body?.updatedMedicationsList
+
+    const prescription = await updatePrescription(prescriptionId, updatedPatientId, updatedMedicationsList);
+
+    if (!prescription) {
+      throw new Error("Prescription not found");
+    }
+
+    res.json({ message: "Prescription deleted successfully" });
+  } catch {
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(500).json({ message: errorMessage });
+  }
+});
+
 router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
@@ -88,7 +118,7 @@ router.patch("/:id/complete", async (req, res) => {
 
     const prescription = await completeFullPrescription(
       prescriptionId,
-      pharmacistId``
+      pharmacistId
     );
     res.status(201).json(prescription);
   } catch (error) {

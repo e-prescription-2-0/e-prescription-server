@@ -10,7 +10,7 @@ const PrescriptionSchema = new Schema({
   medicines: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Medical",
+      ref: "Medicine",
     },
   ],
   prescribedBy: {

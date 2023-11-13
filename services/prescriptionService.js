@@ -55,6 +55,51 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
 
 const deletePrescription = async (prescriptionId) => {
   const prescription = await Prescription.findByIdAndRemove(prescriptionId);
+
+  prescription.medicines?.map((medicineId) => Medicine.findByIdAndRemove(medicineId));
+
+  return prescription;
+};
+
+const updatePrescription = async (
+  prescriptionId,
+  updatedPatientId,
+  updatedMedicationsList
+) => {
+  const prescription = await Prescription.findById(prescriptionId);
+  if (!prescription) {
+    throw new Error("Unknown Prescription");
+  }
+  if (prescription.isCompleted) {
+    throw new Error("Prescription is Completed");
+  }
+
+  if (updatedPatientId) {
+    prescription.prescribedTo = updatedPatientId;
+  }
+
+  if (updatedMedicationsList) {
+    const newMedicationsList = await Promise.all(
+      updatedMedicationsList.medicationsToAdd.map(async (medicineInfo) => {
+        const { medicineName, prescriptionId, signature } = medicineInfo;
+        const medicine = await Medicine.create({
+          medicineName,
+          prescriptionId,
+          signature,
+        });
+        return medicine._id;
+      })
+    );
+    updatedMedicationsList.medicationsToRemove.map((medications)=>{
+      prescription.medicines.slice(prescription.medicines.indexOf(medications._id), 1)     
+    }
+    )
+    prescription.medicines = [...prescription.medicines, ...newMedicationsList];
+  }
+
+  prescription.save();
+
+  
   return prescription;
 };
 
@@ -68,7 +113,7 @@ const completePartialPrescription = async (
   );
   const pharmacist = await User.findById(pharmacistId);
 
-  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+  if (!pharmacist || pharmacist.role !== "pharmacist") {
     throw new Error("Unknown pharmacist");
   }
 
@@ -93,7 +138,7 @@ const completePartialPrescription = async (
 
   // Check if all medicines have completedQuantity equal to zero
   const allMedicinesCompleted = allMedicines.every(
-    (updatedMedical) => updatedMedical.isCompleted === true
+    (updatedMedicine) => updatedMedicine.isCompleted === true
   );
 
   // Find and update the prescription's completed field based on all medicines Completed
@@ -111,14 +156,14 @@ const completePartialPrescription = async (
   return prescription;
 };
 
-const completeFullPrescription = async (prescriptionId) => {
+const completeFullPrescription = async (prescriptionId, pharmacistId) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
     "medicines"
   );
 
   const pharmacist = await User.findById(pharmacistId);
 
-  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+  if (!pharmacist || pharmacist.role !== "pharmacist") {
     throw new Error("Unknown pharmacist");
   }
 
@@ -149,6 +194,7 @@ module.exports = {
   getPrescription,
   createPrescription,
   deletePrescription,
+  updatePrescription,
   completePartialPrescription,
   completeFullPrescription,
 };
