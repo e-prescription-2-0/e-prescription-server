@@ -55,6 +55,49 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
 
 const deletePrescription = async (prescriptionId) => {
   const prescription = await Prescription.findByIdAndRemove(prescriptionId);
+
+  prescription.medicines?.map((medicineId) => Medicine.findByIdAndRemove(medicineId));
+
+  return prescription;
+};
+
+const updatePrescription = async (
+  prescriptionId,
+  updatedPatientId,
+  updatedMedicationsList
+) => {
+  const prescription = await Prescription.findById(prescriptionId);
+  if (!prescription) {
+    throw new Error("Unknown Prescription");
+  }
+  if (prescription.isCompleted) {
+    throw new Error("Prescription is Completed");
+  }
+
+  if (updatedPatientId) {
+    prescription.prescribedTo = updatedPatientId;
+  }
+
+  if (updatedMedicationsList) {
+    const oldMedicals = prescription.medicines;
+    const newMedicationsList = await Promise.all(
+      updatedMedicationsList.map(async (medicineInfo) => {
+        const { medicineName, prescriptionId, signature } = medicineInfo;
+        const medicine = await Medicine.create({
+          medicineName,
+          prescriptionId,
+          signature,
+        });
+        return medicine;
+      })
+    );
+    prescription.medicines = newMedicationsList;
+  }
+
+  prescription.save();
+
+  oldMedicals?.map((medicineId) => Medicine.findByIdAndRemove(medicineId));
+  
   return prescription;
 };
 
@@ -93,7 +136,7 @@ const completePartialPrescription = async (
 
   // Check if all medicines have completedQuantity equal to zero
   const allMedicinesCompleted = allMedicines.every(
-    (updatedMedical) => updatedMedical.isCompleted === true
+    (updatedMedicine) => updatedMedicine.isCompleted === true
   );
 
   // Find and update the prescription's completed field based on all medicines Completed
@@ -126,10 +169,10 @@ const completeFullPrescription = async (prescriptionId, pharmacistId) => {
 
   if (completed === true) {
     const allMedicines = await Promise.all(
-      prescription.medicines.map(async (medical) => {
-        medical.isCompleted = true;
-        medical.save();
-        return medical;
+      prescription.medicines.map(async (medicine) => {
+        medicine.isCompleted = true;
+        medicine.save();
+        return medicine;
       })
     );
     prescription.medicines = allMedicines;
@@ -149,6 +192,7 @@ module.exports = {
   getPrescription,
   createPrescription,
   deletePrescription,
+  updatePrescription,
   completePartialPrescription,
   completeFullPrescription,
 };
