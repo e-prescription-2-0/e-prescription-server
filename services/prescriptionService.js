@@ -79,24 +79,26 @@ const updatePrescription = async (
   }
 
   if (updatedMedicationsList) {
-    const oldMedicals = prescription.medicines;
     const newMedicationsList = await Promise.all(
-      updatedMedicationsList.map(async (medicineInfo) => {
+      updatedMedicationsList.medicationsToAdd.map(async (medicineInfo) => {
         const { medicineName, prescriptionId, signature } = medicineInfo;
         const medicine = await Medicine.create({
           medicineName,
           prescriptionId,
           signature,
         });
-        return medicine;
+        return medicine._id;
       })
     );
-    prescription.medicines = newMedicationsList;
+    updatedMedicationsList.medicationsToRemove.map((medications)=>{
+      prescription.medicines.slice(prescription.medicines.indexOf(medications._id), 1)     
+    }
+    )
+    prescription.medicines = [...prescription.medicines, ...newMedicationsList];
   }
 
   prescription.save();
 
-  oldMedicals?.map((medicineId) => Medicine.findByIdAndRemove(medicineId));
   
   return prescription;
 };

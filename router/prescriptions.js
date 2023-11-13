@@ -62,6 +62,18 @@ router.delete("/:id/delete", async (req, res) => {
 });
 
 router.patch("/:prescriptionId/update", async (req, res) => {
+  /* 
+  req.body example:
+
+  {
+    updatedPatient: patientId,
+    updatedMedicationsList:{
+      medicationsToAdd: [{medicineName, prescriptionId, signature}],
+      medicationsToRemove : [{_id}]
+    }
+  }
+
+  */
   try {
     const prescriptionId = req.params.prescriptionId
     const updatedPatientId = req.body?.updatedPatientId
