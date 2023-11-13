@@ -88,7 +88,7 @@ router.patch("/:id/complete", async (req, res) => {
 
     const prescription = await completeFullPrescription(
       prescriptionId,
-      pharmacistId``
+      pharmacistId
     );
     res.status(201).json(prescription);
   } catch (error) {

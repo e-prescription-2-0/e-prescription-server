@@ -68,7 +68,7 @@ const completePartialPrescription = async (
   );
   const pharmacist = await User.findById(pharmacistId);
 
-  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+  if (!pharmacist || pharmacist.role !== "pharmacist") {
     throw new Error("Unknown pharmacist");
   }
 
@@ -111,14 +111,14 @@ const completePartialPrescription = async (
   return prescription;
 };
 
-const completeFullPrescription = async (prescriptionId) => {
+const completeFullPrescription = async (prescriptionId, pharmacistId) => {
   const prescription = await Prescription.findById(prescriptionId).populate(
     "medicines"
   );
 
   const pharmacist = await User.findById(pharmacistId);
 
-  if (!pharmacist || !(pharmacist.role === "pharmacist")) {
+  if (!pharmacist || pharmacist.role !== "pharmacist") {
     throw new Error("Unknown pharmacist");
   }
 
