@@ -45,7 +45,9 @@ const login = async (email, password) => {
       const token = createSession(user);
 
       return Object.assign(token,user ) 
-}
+};
+
+
 
 
 
@@ -60,16 +62,17 @@ const login = async (email, password) => {
     
     return {[userTokenName]:createToken(payload) } ;
     
-    }
+    };
 
 
 const removePassword = (data) => {
     const { password, __v, ...userData } = data;
     return userData
-}
+};
 
 
     module.exports = {
       register,
-      login
+      login,
+      
     }

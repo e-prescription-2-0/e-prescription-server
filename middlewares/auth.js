@@ -7,7 +7,7 @@ const auth = async (req,res,next) => {
   
     try {
       const decodedToken = await jwt.verifyToken(token);
-      //req.user = decodedToken; - optional
+      
       
       next();
     } catch (error) {
@@ -18,3 +18,6 @@ const auth = async (req,res,next) => {
 
 
 module.exports = auth;
+
+
+
