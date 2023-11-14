@@ -17,23 +17,30 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-
   password: {
     type: String,
     required: true,
   },
   role: {
     type: String,
-    enum: ["patient", "pharmacist ", "doctor"], // Define the available roles
+    enum: ["patient", "pharmacist", "doctor"], // Define the available roles
     default: "patient", // Set a default role if necessary
   },
-  CreatedOn: {
+  createdOn: {
     type: String,
     default: Date(),
     required: true,
   },
+
+  prescriptions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Prescription", // Reference the User model
+    },
+  ],
+  
 });
 
-PasswordPreSaveHook(userSchema)
+PasswordPreSaveHook(userSchema);
 
 module.exports = mongoose.model("User", userSchema);

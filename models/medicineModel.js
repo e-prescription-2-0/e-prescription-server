@@ -14,10 +14,10 @@ const MedicineSchema = new Schema({
     type: String,
     required: false,
   },
-  completed: {
+  isCompleted: {
     type: Boolean,
     default: false,
   },
 });
 
-module.exports = mongoose.model("Medical", MedicineSchema);
+module.exports = mongoose.model("Medicine", MedicineSchema);
