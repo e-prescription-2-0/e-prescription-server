@@ -26,7 +26,7 @@ const register = async (firstName, lastName, username, email, password, role, pr
       firstName, lastName, username, email, password, role, ...profileInfo})
       
       
-      let user = removePassword(createdUser.toObject())
+      const user = createdUser.toObject()
       const token = createSession(user);
 
      return Object.assign(token,user ) 
@@ -41,7 +41,7 @@ const login = async (email, password) => {
       const passwordCheck = await bcrypt.compare(password, user.password);  
       if(!passwordCheck)  {throw new Error('Email doesnt exist or password is incorrect!')};
     
-      user = removePassword(user.toObject());
+      user = user.toObject();
       const token = createSession(user);
 
       return Object.assign(token,user ) 

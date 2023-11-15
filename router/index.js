@@ -6,7 +6,7 @@ const prescriptions = require("./prescriptions");
 const patients = require("./patients");
 
 router.use("/test", test);
-router.use("/user", users);
+router.use("/auth", users);
 router.use("/prescriptions", prescriptions);
 router.use("/patients", patients);
 
