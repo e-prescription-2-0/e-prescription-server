@@ -11,7 +11,7 @@ const testData = {
 
 //example for using middleware
 
-router.get("/", accesRouteGuard('doctor'), function (req, res) {
+router.get("/", accesRouteGuard('patient'), function (req, res) {
   console.log("Hello from test router");
   res.send(testData);
 });
