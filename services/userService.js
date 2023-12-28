@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const { createToken } = require("../utils/jwt");
 const { userTokenName } = require("../config/app-config");
 
