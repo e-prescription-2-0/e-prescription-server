@@ -1,16 +1,36 @@
 const User = require("../models/userModel");
 
-const getAllDoctorsInfo = async () => await User.find({ role: "doctor" })
-    .select("firstName lastName email role specialty")
-    .exec();
+const getAllDoctorsInfo = async (
+  skip,
+  limit,
+  searchEmail = null,
+  sortFields = ["firstName", "lastName"]
+) => {
+  try {
+    let query = { role: "doctor" };
 
+    if (searchEmail) {
+      query.email = { $regex: new RegExp(searchEmail, "i") }; // Case-insensitive search
+    }
+
+    const doctors = await User.find(query)
+      .select("firstName lastName email doctorId hospitalName role specialty")
+      .sort(sortFields.join(" ")) // Join sorting fields with a space
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return doctors;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const getDoctorInfo = async (doctorId) =>
   await User.findById(doctorId)
-    .select("firstName lastName email role specialty")
+    .select("firstName lastName email  doctorId hospitalName  role specialty")
     .exec();
 
-    
 const getAllPatientsFromDoctorList = async (doctorId) => {
   const doctor = await User.findById(doctorId).populate("patients");
 

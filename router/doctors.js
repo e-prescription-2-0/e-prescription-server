@@ -7,8 +7,16 @@ const {
 
 router.get("/", async (req, res) => {
   try {
-    const doctors = await getAllDoctorsInfo();
+    const {page,  searchEmail} = req.query
 
+    const limit = 1
+
+    const skip = (page - 1) * limit;
+    
+
+    const doctors = await getAllDoctorsInfo(skip, limit, searchEmail);
+
+    
     res.status(200).json(doctors);
   } catch (error) {
     res.status(404).json({ message: error });
