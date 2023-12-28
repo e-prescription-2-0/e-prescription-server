@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   try {
     const {page,  searchEmail} = req.query
 
-    const limit = 1
+    const limit = 10
 
     const skip = (page - 1) * limit;
     
