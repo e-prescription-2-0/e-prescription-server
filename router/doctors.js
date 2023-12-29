@@ -7,14 +7,14 @@ const {
 
 router.get("/", async (req, res) => {
   try {
-    const {page,  searchEmail} = req.query
+    const {page,  search} = req.query
 
     const limit = 10
 
     const skip = (page - 1) * limit;
     
 
-    const doctors = await getAllDoctorsInfo(skip, limit, searchEmail);
+    const doctors = await getAllDoctorsInfo(skip, limit, search);
 
     
     res.status(200).json(doctors);

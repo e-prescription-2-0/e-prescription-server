@@ -3,14 +3,14 @@ const User = require("../models/userModel");
 const getAllDoctorsInfo = async (
   skip,
   limit,
-  searchEmail = null,
+  search = null,
   sortFields = ["firstName", "lastName"]
 ) => {
   try {
     let query = { role: "doctor" };
 
-    if (searchEmail) {
-      query.email = { $regex: new RegExp(searchEmail, "i") }; // Case-insensitive search
+    if (search) {
+      query.email = { $regex: new RegExp(search, "i") }; // Case-insensitive search
     }
 
     const doctors = await User.find(query)
