@@ -20,7 +20,10 @@ const getAllDoctorsInfo = async (
       .limit(limit)
       .exec();
 
-    return doctors;
+    const totalCount = await User.countDocuments(query);
+    const numberPages = Math.ceil(totalCount / limit)
+
+    return {doctors, numberPages};
   } catch (error) {
     throw error;
   }

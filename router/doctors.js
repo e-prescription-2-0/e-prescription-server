@@ -14,10 +14,10 @@ router.get("/", async (req, res) => {
     const skip = (page - 1) * limit;
     
 
-    const doctors = await getAllDoctorsInfo(skip, limit, search);
+    const result = await getAllDoctorsInfo(skip, limit, search);
 
     
-    res.status(200).json(doctors);
+    res.status(200).json(result);
   } catch (error) {
     res.status(404).json({ message: error });
   }
