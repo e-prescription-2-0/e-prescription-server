@@ -8,8 +8,8 @@ const config = {
     },
     production: {
         port: process.env.PORT || 3000,
-        dbURL: 'mongodb+srv://user11:user11@warwick.zwcwaek.mongodb.net/e-v1',
-        origin: []
+        dbURL: process.env.DB_URL_CREDENTIALS || 'mongodb+srv://user11:user11@warwick.zwcwaek.mongodb.net/e-v1',
+        origin: process.env.origin || ['http://localhost:5173', 'http://localhost:3000']
     }
 };
 
