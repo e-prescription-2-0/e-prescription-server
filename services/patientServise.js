@@ -5,7 +5,7 @@ const getPatientInfo = async (patientId) =>
 
 const getPatientPrescriptions = async (patientId) =>
   await User.findOne({
-    _id: patientId,
+    patientId: patientId,
     role: "patient",
   })
     .populate("prescriptions")
