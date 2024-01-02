@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { register } = require("../services/userService");
 const userModel = require("../models/userModel");
-const { addPatientToDoctorList, removePatientFromDoctorList, getAllPatientsFromDoctorList } = require("../services/doctorService");
+const {
+  addPatientToDoctorList,
+  removePatientFromDoctorList,
+  getAllPatientsFromDoctorList,
+} = require("../services/doctorService");
 
 const User = userModel;
 
@@ -64,11 +68,10 @@ router.delete("/:userId/delete", async (req, res) => {
   }
 });
 
-router.get("/profile", async (req, res) => {
-  const userId = req.user.id;
+router.get("/profile/:id", async (req, res) => {
+  const userId = req.params.id;
 
   try {
-    // Find and delete the user by their ID
     const user = await User.findById(userId);
 
     if (!user) {
@@ -80,38 +83,37 @@ router.get("/profile", async (req, res) => {
     const errorMessage = error.message || "Internal Server Error";
 
     res.status(500).json({
-      
       message: "Error user access",
       error: errorMessage,
     });
   }
 });
 
-
-router.get("/patients", async (req, res) =>{
-  try{
+router.get("/patients", async (req, res) => {
+  try {
     const doctorId = req.user.id;
-    const doctorPatientsList = await getAllPatientsFromDoctorList()
+    const doctorPatientsList = await getAllPatientsFromDoctorList();
 
-    res.status(200).json(doctorPatientsList)
-
-  }catch (error) {
+    res.status(200).json(doctorPatientsList);
+  } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
 
     res.status(500).json({
       message: errorMessage,
     });
   }
-})
-
+});
 
 router.post("/patients/add/:patientId", async (req, res) => {
   const doctorId = req.user.id;
   const patientId = req.params.patientId;
 
   try {
-    const doctorPatientsList = await addPatientToDoctorList(patientId, doctorId)
-    res.status(200).json(doctorPatientsList)
+    const doctorPatientsList = await addPatientToDoctorList(
+      patientId,
+      doctorId
+    );
+    res.status(200).json(doctorPatientsList);
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
 
@@ -126,8 +128,11 @@ router.delete("/patients/remove/:patientId", async (req, res) => {
   const patientId = req.params.patientId;
 
   try {
-    const doctorPatientsList = await removePatientFromDoctorList(patientId, doctorId)
-    res.status(200).json(doctorPatientsList)
+    const doctorPatientsList = await removePatientFromDoctorList(
+      patientId,
+      doctorId
+    );
+    res.status(200).json(doctorPatientsList);
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
     res.status(500).json({
