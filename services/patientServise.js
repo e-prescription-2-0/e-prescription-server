@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 
 const getPatientInfo = async (patientId) =>
-  await User.findOne({ _id: patientId, role: "patient" });
+  await User.findOne({ patientId: patientId, role: "patient" });
 
 const getPatientPrescriptions = async (patientId) =>
   await User.findOne({
