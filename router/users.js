@@ -89,10 +89,18 @@ router.get("/profile/:id", async (req, res) => {
   }
 });
 
-router.get("/patients", async (req, res) => {
+router.get("/:id/patients", async (req, res) => {
   try {
-    const doctorId = req.user.id;
-    const doctorPatientsList = await getAllPatientsFromDoctorList();
+    const doctorId = req.params.id;
+
+    const {page = 1,  search=''} = req.query
+
+    const limit = 10
+
+    const skip = (page - 1) * limit;
+
+    const doctorPatientsList = await getAllPatientsFromDoctorList(doctorId, skip, limit, search);
+
 
     res.status(200).json(doctorPatientsList);
   } catch (error) {
@@ -104,9 +112,10 @@ router.get("/patients", async (req, res) => {
   }
 });
 
-router.post("/patients/add/:patientId", async (req, res) => {
-  const doctorId = req.user.id;
+router.post("/:doctorId/patients/add/:patientId", async (req, res) => {
+  const doctorId = req.params.doctorId;
   const patientId = req.params.patientId;
+  console.log(doctorId, patientId)
 
   try {
     const doctorPatientsList = await addPatientToDoctorList(

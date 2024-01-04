@@ -19,7 +19,7 @@ const DoctorProfileSchema = new Schema({
   patients: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "PatientProfile",
+      ref: "User",
     },
   ],
 

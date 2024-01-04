@@ -21,9 +21,9 @@ const getAllDoctorsInfo = async (
       .exec();
 
     const totalCount = await User.countDocuments(query);
-    const numberPages = Math.ceil(totalCount / limit)
+    const numberPages = Math.ceil(totalCount / limit);
 
-    return {doctors, numberPages};
+    return { doctors, numberPages };
   } catch (error) {
     throw error;
   }
@@ -34,14 +34,25 @@ const getDoctorInfo = async (doctorId) =>
     .select("firstName lastName email  doctorId hospitalName  role specialty")
     .exec();
 
-const getAllPatientsFromDoctorList = async (doctorId) => {
-  const doctor = await User.findById(doctorId).populate("patients");
+const getAllPatientsFromDoctorList = async (doctorId, skip, limit, search) => {
+  const totalPatients = (await User.findById(doctorId))?.patients.length;
+  const patients = (
+    await User.findById(doctorId).populate({
+      path: "patients",
+      match: {
+        patientId: { $regex: new RegExp(search, "i") },
+      },
+      options: {
+        sort: { "firstName": 1, "lastName": 1 },
+        skip: parseInt(skip),
+        limit: parseInt(limit),
+      },
+    })
+  )?.patients;
 
-  if (!doctor) {
-    throw new Error("Unknown doctor");
-  }
+  const numberOfAllPages = Math.ceil(totalPatients / parseInt(limit));
 
-  return doctor.patients;
+  return { patients, numberOfAllPages };
 };
 
 const addPatientToDoctorList = async (patientId, doctorId) => {
