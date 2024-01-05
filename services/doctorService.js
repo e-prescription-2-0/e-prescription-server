@@ -14,7 +14,7 @@ const getAllDoctorsInfo = async (
     }
 
     const doctors = await User.find(query)
-      .select("firstName lastName email doctorId hospitalName role specialty")
+      .select("-password -patients -prescriptions")
       .sort(sortFields.join(" ")) // Join sorting fields with a space
       .skip(skip)
       .limit(limit)
