@@ -50,9 +50,9 @@ const getAllPatientsFromDoctorList = async (doctorId, skip, limit, search) => {
     })
   )?.patients;
 
-  const numberOfAllPages = Math.ceil(totalPatients / parseInt(limit));
+  const numberPages = Math.ceil(totalPatients / parseInt(limit));
 
-  return { patients, numberOfAllPages };
+  return { patients, numberPages };
 };
 
 const addPatientToDoctorList = async (patientId, doctorId) => {
