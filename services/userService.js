@@ -15,15 +15,17 @@ const UserTypes = {
 
 
 
-const register = async (firstName, lastName, username, email, password, role, profileInfo) => {
-  const model = UserTypes[role]
+const register = async (firstName, lastName, email, password, role, profileInfo) => {
+  const model = UserTypes[role];
+  console.log(profileInfo);
+  if(!model) throw new Error({error: 'Role can not be empty'})
   const existing = await model.findOne({email}).collation({locale :'en', strength: 2})
   if(existing) {
     throw new Error ('Email is already exist')
 }
       
     const createdUser = await model.create( {
-      firstName, lastName, username, email, password, role, ...profileInfo})
+      firstName, lastName, email, password, role, ...profileInfo})
       
       
       const user = createdUser.toObject()
@@ -35,22 +37,22 @@ const register = async (firstName, lastName, username, email, password, role, pr
 const login = async (email, password) => {
     
 
- let user =  await UserTypes.user.findOne({ email }).collation({locale:'en', strength:2});
+ 
+    let user = await  UserTypes.user.findOne({ email }).collation({locale:'en', strength:2});
 
-      if(!user) {throw new Error('Email doesnt exist or password is incorrect!')};
-      const passwordCheck = await bcrypt.compare(password, user.password);  
-      if(!passwordCheck)  {throw new Error('Email doesnt exist or password is incorrect!')};
+   
+
+    if(!user) {throw new Error('Email doesnt exist or password is incorrect!')};
+    const passwordCheck = await bcrypt.compare(password, user.password);  
+    if(!passwordCheck)  {throw new Error('Email doesnt exist or password is incorrect!')};
+    user = user.toObject();
+    const token = createSession(user);
+  
+    return Object.assign(token,user ) 
     
-      user = user.toObject();
-      const token = createSession(user);
 
-      return Object.assign(token,user ) 
+    
 };
-
-
-
-
-
 
 
 

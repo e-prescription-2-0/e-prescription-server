@@ -8,69 +8,60 @@ const trimReqBody = require("../middlewares/trimBody");
 
 const User = userModel;
 
-router.post("/register", trimReqBody, async (req, res) => {
-  try {
-    if (Object.values(req.body).some((f) => f == "")) {
-      throw new Error("All fields are required");
-    }
-    if (req.body.password != req.body.repeatPassword) {
-      throw new Error("Passwords do not match!");
-    }
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      role,
-      profileInfo,
-    } = req.body;
+router.post("/register", trimReqBody, (req, res, next) => {
 
-    const user = await register(
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      role,
-      profileInfo
-    );
-
-    
-    res.status(201);
-    res.json(user);
-    
-  } catch (error) {
-    console.log(error);
-    res.status(401).send({error:error.message});
-  }
-});
-
-router.post('/login',trimReqBody, async (req,res) => {
   
 
   if (Object.values(req.body).some((f) => f == "")) {
-    throw new Error("All fields are required");
+    throw new Error({ erorr: "All fields are required" });
   }
-  const {email, password} = req.body
+  if (req.body.password != req.body.repeatPassword) {
+    throw new Error("Passwords do not match!");
+  }
   try {
 
-    const user = await login(email, password);
+
+    const {firstName, lastName, email, password, role, profileInfo} = req.body;
+
+    const user = register(firstName,lastName,email, password,role, profileInfo);
+
     res.status(201);
     res.json(user);
-    
+
   } catch (error) {
-   
-    res.status(401).send({error:error.message})
+ 
+    next(error)
+    //res.status(401).send({ error: error.message });
+  }
+});
+
+router.post('/login', async (req, res,next) => {
+
+
+  if (Object.values(req.body).some((f) => f == "")) {
+    throw new Error("All fields are required");
+
+  }
+  const { loginEmail, loginPassword } = req.body
+  try {
+    const email = loginEmail;
+    const password = loginPassword
+    const user = await login(email, password);
+    res.status(200).json(user);
+
+  } catch (error) {
+
+    next(error)
+    //res.status(401).send({ error: error.message })
   }
 
 
 })
 
 
-router.get('/logout', auth, (req, res) => {
- 
-  res.status(200).json({ message: 'Logged out successfully' });
+router.post('/logout', auth, (req, res, next) => {
+
+  res.status(204).json({ message: 'Logged out successfully' });
 });
 
 
