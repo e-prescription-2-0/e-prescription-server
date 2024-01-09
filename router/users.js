@@ -8,9 +8,9 @@ const trimReqBody = require("../middlewares/trimBody");
 
 const User = userModel;
 
-router.post("/register", trimReqBody, (req, res, next) => {
+router.post("/register", trimReqBody, async (req, res, next) => {
 
-  
+ 
 
   if (Object.values(req.body).some((f) => f == "")) {
     throw new Error({ erorr: "All fields are required" });
@@ -23,10 +23,11 @@ router.post("/register", trimReqBody, (req, res, next) => {
 
     const {firstName, lastName, email, password, role, profileInfo} = req.body;
 
-    const user = register(firstName,lastName,email, password,role, profileInfo);
+   
 
-    res.status(201);
-    res.json(user);
+    const user = await register(firstName,lastName,email, password,role, profileInfo);
+   
+    res.status(201).json(user);
 
   } catch (error) {
  

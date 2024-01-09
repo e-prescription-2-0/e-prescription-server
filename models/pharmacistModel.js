@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const User = require("./userModel");
 
 const PharmacistProfileSchema = new Schema({
-  pharmacy: {
+  pharmacyName: {
     type: String,
     required: true,
   },

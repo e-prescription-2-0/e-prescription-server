@@ -17,16 +17,16 @@ const UserTypes = {
 
 const register = async (firstName, lastName, email, password, role, profileInfo) => {
   const model = UserTypes[role];
-  console.log(profileInfo);
+  
   if(!model) throw new Error({error: 'Role can not be empty'})
   const existing = await model.findOne({email}).collation({locale :'en', strength: 2})
   if(existing) {
     throw new Error ('Email is already exist')
 }
-      
+
+
     const createdUser = await model.create( {
-      firstName, lastName, email, password, role, ...profileInfo})
-      
+     firstName, lastName, email, password, role, ...profileInfo})
       
       const user = createdUser.toObject()
       const token = createSession(user);
@@ -53,9 +53,6 @@ const login = async (email, password) => {
 
     
 };
-
-
-
 
 
 

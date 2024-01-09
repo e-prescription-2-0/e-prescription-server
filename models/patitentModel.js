@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const User = require("./userModel");
 
 const PatientProfileSchema = new Schema({
-  personalId: {
+  patientId: {
     type: String,
     unique: true,
     required: true,
