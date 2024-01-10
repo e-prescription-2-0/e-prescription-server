@@ -31,8 +31,8 @@ router.post("/register", trimReqBody, async (req, res, next) => {
 
   } catch (error) {
  
-    next(error)
-    //res.status(401).send({ error: error.message });
+    
+    res.status(401).send({ error: error.message });
   }
 });
 
@@ -52,8 +52,8 @@ router.post('/login', async (req, res,next) => {
 
   } catch (error) {
 
-    next(error)
-    //res.status(401).send({ error: error.message })
+   
+    res.status(401).send({ error: error.message })
   }
 
 

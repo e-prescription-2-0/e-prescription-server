@@ -20,7 +20,7 @@ const PatientProfileSchema = new Schema({
   },
   gender: {
     type: String,
-    enum: ["Male", "Female"],
+    enum: ["male", "female"],
     require: true,
   },
 });

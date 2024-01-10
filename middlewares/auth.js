@@ -4,7 +4,7 @@ const jwt = require("../utils/jwt");
 const auth = async (req,res,next) => {
   
   const token = req.headers['x-authorization'];
-  console.log(req.headers);
+ 
   if(!token) {return res.status(401).json({ message: 'Unauthorized access' });}
   
     try {
