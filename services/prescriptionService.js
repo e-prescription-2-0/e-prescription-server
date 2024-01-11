@@ -4,8 +4,8 @@ const User = require("../models/userModel");
 
 const getAllPrescriptions = async () => await Prescription.find({});
 
-const getPrescription = async () => {
-  const prescription = await Prescription.findById(req.params.id).populate(
+const getPrescription = async (id) => {
+  const prescription = await Prescription.findById().populate(
     "medicines"
   );
   if (!prescription) {

@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const prescription = await getPrescription();
+    const prescription = await getPrescription(req.params.id);
     res.send(prescription);
   } catch {
     const errorMessage = error.message || "Internal Server Error";
