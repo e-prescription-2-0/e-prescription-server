@@ -55,7 +55,7 @@ router.delete("/:id/delete", async (req, res) => {
     }
 
     res.json({ message: "Prescription deleted successfully" });
-  } catch {
+  } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
     res.status(500).json({ message: errorMessage });
   }

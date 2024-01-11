@@ -54,9 +54,9 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
 };
 
 const deletePrescription = async (prescriptionId) => {
-  const prescription = await Prescription.findByIdAndRemove(prescriptionId);
+  const prescription = await Prescription.findByIdAndDelete(prescriptionId);
 
-  prescription.medicines?.map((medicineId) => Medicine.findByIdAndRemove(medicineId));
+  prescription.medicines?.map((medicineId) => Medicine.findByIdAndDelete(medicineId));
 
   return prescription;
 };
