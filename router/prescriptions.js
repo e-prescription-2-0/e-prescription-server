@@ -49,7 +49,7 @@ router.post("/create", async (req, res) => {
 
 router.delete("/:id/delete", async (req, res) => {
   try {
-    const prescription = await deletePrescription();
+    const prescription = await deletePrescription(req.params.id);
     if (!prescription) {
       throw new Error("Prescription not found");
     }
