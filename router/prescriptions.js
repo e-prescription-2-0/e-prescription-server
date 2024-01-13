@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-
 const {
   getAllPrescriptions,
   getPrescription,
@@ -14,15 +13,26 @@ const {
 
 // Define your route handlers
 router.get("/", async (req, res) => {
-  const prescriptions = await getAllPrescriptions();
-  res.send(prescriptions);
+  try {
+    const { page, search } = req.query;
+
+    const limit = 10;
+
+    const skip = (page - 1) * limit;
+
+    const prescriptions = await getAllPrescriptions(skip, limit, search);
+    res.send(prescriptions);
+  } catch (error) {
+    const errorMessage = error.message || "Internal Server Error";
+    res.status(500).json({ message: errorMessage });
+  }
 });
 
 router.get("/:id", async (req, res) => {
   try {
     const prescription = await getPrescription(req.params.id);
     res.send(prescription);
-  } catch {
+  } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
     res.status(500).json({ message: errorMessage });
   }
@@ -75,18 +85,22 @@ router.patch("/:prescriptionId/update", async (req, res) => {
 
   */
   try {
-    const prescriptionId = req.params.prescriptionId
-    const updatedPatientId = req.body?.updatedPatientId
-    const updatedMedicationsList = req.body?.updatedMedicationsList
+    const prescriptionId = req.params.prescriptionId;
+    const updatedPatientId = req.body?.updatedPatientId;
+    const updatedMedicationsList = req.body?.updatedMedicationsList;
 
-    const prescription = await updatePrescription(prescriptionId, updatedPatientId, updatedMedicationsList);
+    const prescription = await updatePrescription(
+      prescriptionId,
+      updatedPatientId,
+      updatedMedicationsList
+    );
 
     if (!prescription) {
       throw new Error("Prescription not found");
     }
 
     res.json({ message: "Prescription deleted successfully" });
-  } catch {
+  } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
     res.status(500).json({ message: errorMessage });
   }

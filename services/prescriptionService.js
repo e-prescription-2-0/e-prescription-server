@@ -1,13 +1,39 @@
 const Prescription = require("../models/prescriptionsModel");
 const Medicine = require("../models/medicineModel");
 const User = require("../models/userModel");
+const { generateRxNumber } = require("../utils/generateRxNumber");
 
-const getAllPrescriptions = async () => await Prescription.find({});
+const getAllPrescriptions = async (
+  skip,
+  limit,
+  search = null,
+  sortFields = ["issuedOn"]
+) => {
+  try {
+    let query = {};
+
+    if (search) {
+      query.prescriptionId = { $regex: new RegExp(search, "i") }; // Case-insensitive search
+    }
+
+    const prescriptions = await Prescription.find(query)
+      .populate("medicines")
+      .sort(sortFields.join(" ")) // Join sorting fields with a space
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const totalCount = await Prescription.countDocuments(query);
+    const numberPages = Math.ceil(totalCount / limit);
+
+    return { prescriptions, numberPages };
+  } catch (error) {
+    throw error;
+  }
+};
 
 const getPrescription = async (id) => {
-  const prescription = await Prescription.findById(id).populate(
-    "medicines"
-  );
+  const prescription = await Prescription.findById(id).populate("medicines");
   if (!prescription) {
     throw new Error("Prescription not found");
   }
@@ -17,12 +43,14 @@ const getPrescription = async (id) => {
 const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
   const patient = await User.findOne({ _id: prescribedTo, role: "patient" });
   const doctor = await User.findOne({ _id: prescribedBy, role: "doctor" });
-
+  
+  const rxNumber = generateRxNumber()
   if (!patient || !doctor) {
     throw new Error("Patient or Doctor does not exist");
   }
 
   const prescription = await Prescription.create({
+    prescriptionId: rxNumber,
     prescribedTo,
     prescribedBy,
   });
@@ -56,7 +84,9 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
 const deletePrescription = async (prescriptionId) => {
   const prescription = await Prescription.findByIdAndDelete(prescriptionId);
 
-  prescription.medicines?.map((medicineId) => Medicine.findByIdAndDelete(medicineId));
+  prescription.medicines?.map((medicineId) =>
+    Medicine.findByIdAndDelete(medicineId)
+  );
 
   return prescription;
 };
@@ -90,16 +120,17 @@ const updatePrescription = async (
         return medicine._id;
       })
     );
-    updatedMedicationsList.medicationsToRemove.map((medications)=>{
-      prescription.medicines.slice(prescription.medicines.indexOf(medications._id), 1)     
-    }
-    )
+    updatedMedicationsList.medicationsToRemove.map((medications) => {
+      prescription.medicines.slice(
+        prescription.medicines.indexOf(medications._id),
+        1
+      );
+    });
     prescription.medicines = [...prescription.medicines, ...newMedicationsList];
   }
 
   prescription.save();
 
-  
   return prescription;
 };
 
