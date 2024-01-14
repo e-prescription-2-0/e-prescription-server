@@ -35,7 +35,14 @@ const getDoctorInfo = async (doctorId) =>
     .exec();
 
 const getAllPatientsFromDoctorList = async (doctorId, skip, limit, search) => {
-  const totalPatients = (await User.findById(doctorId))?.patients.length;
+  const totalPatients = (
+    await User.findById(doctorId).populate({
+      path: "patients",
+      match: {
+        patientId: { $regex: new RegExp(search, "i") },
+      },
+    })
+  ).patients.length;
   const patients = (
     await User.findById(doctorId).populate({
       path: "patients",
@@ -43,7 +50,7 @@ const getAllPatientsFromDoctorList = async (doctorId, skip, limit, search) => {
         patientId: { $regex: new RegExp(search, "i") },
       },
       options: {
-        sort: { "firstName": 1, "lastName": 1 },
+        sort: { firstName: 1, lastName: 1 },
         skip: parseInt(skip),
         limit: parseInt(limit),
       },

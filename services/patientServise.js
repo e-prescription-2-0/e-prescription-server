@@ -10,7 +10,7 @@ const getAllPatientsInfo = async (
     let query = { role: "patient" };
 
     if (search) {
-      query.email = { $regex: new RegExp(search, "i") }; // Case-insensitive search
+      query.patientId = { $regex: new RegExp(search, "i") }; // Case-insensitive search
     }
 
     const patients = await User.find(query)
