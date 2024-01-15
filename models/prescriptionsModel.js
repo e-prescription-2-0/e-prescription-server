@@ -15,11 +15,11 @@ const PrescriptionSchema = new Schema({
   ],
   prescribedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "DoctorProfile",
+    ref: "User",
   },
   prescribedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "PatientProfile",
+    ref: "User",
   },
   issuedOn: {
     type: String,

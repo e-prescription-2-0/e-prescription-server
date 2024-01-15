@@ -18,6 +18,14 @@ const getAllPrescriptions = async (
 
     const prescriptions = await Prescription.find(query)
       .populate("medicines")
+      .populate({
+        path: "prescribedTo",
+        select: "-password", // Exclude the 'password' field
+      })
+      .populate({
+        path: "prescribedBy",
+        select: "-password", // Exclude the 'password' field
+      })
       .sort(sortFields.join(" ")) // Join sorting fields with a space
       .skip(skip)
       .limit(limit)
@@ -33,7 +41,16 @@ const getAllPrescriptions = async (
 };
 
 const getPrescription = async (id) => {
-  const prescription = await Prescription.findById(id).populate("medicines");
+  const prescription = await Prescription.findById(id)
+    .populate("medicines")
+    .populate({
+      path: "prescribedTo",
+      select: "-password", // Exclude the 'password' field
+    })
+    .populate({
+      path: "prescribedBy",
+      select: "-password", // Exclude the 'password' field
+    });
   if (!prescription) {
     throw new Error("Prescription not found");
   }
@@ -43,8 +60,8 @@ const getPrescription = async (id) => {
 const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
   const patient = await User.findOne({ _id: prescribedTo, role: "patient" });
   const doctor = await User.findOne({ _id: prescribedBy, role: "doctor" });
-  
-  const rxNumber = generateRxNumber()
+
+  const rxNumber = generateRxNumber();
   if (!patient || !doctor) {
     throw new Error("Patient or Doctor does not exist");
   }
