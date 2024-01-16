@@ -15,7 +15,7 @@ const PatientProfileSchema = new Schema({
       ref: "Prescription", // Reference the User model
     },
   ],
-  dateOfBird: {
+  dateOfBirth: {
     type: Date,
   },
   gender: {
