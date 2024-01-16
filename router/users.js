@@ -39,7 +39,8 @@ router.post("/register", trimReqBody, async (req, res, next) => {
 router.post('/login', async (req, res,next) => {
 
 
-  if (Object.values(req.body).some((f) => f == "")) {
+  if (!req.body.loginEmail || !req.body.loginPassword ) {
+   
     throw new Error("All fields are required");
 
   }
