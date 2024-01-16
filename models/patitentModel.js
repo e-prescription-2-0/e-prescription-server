@@ -17,11 +17,12 @@ const PatientProfileSchema = new Schema({
   ],
   dateOfBirth: {
     type: Date,
+    required: true,
   },
   gender: {
     type: String,
     enum: ["male", "female"],
-    require: true,
+    required: true,
   },
 });
 
