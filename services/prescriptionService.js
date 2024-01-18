@@ -204,36 +204,20 @@ const completePartialPrescription = async (
   return prescription;
 };
 
-const completeFullPrescription = async (prescriptionId, pharmacistId) => {
-  const prescription = await Prescription.findById(prescriptionId).populate(
-    "medicines"
-  );
+const completeFullPrescription = async (prescriptionId) => {
+  const prescription = await Prescription.findById(prescriptionId)
+    .populate("medicines")
+    .populate({
+      path: "prescribedTo",
+      select: "-password", // Exclude the 'password' field
+    })
+    .populate({
+      path: "prescribedBy",
+      select: "-password", // Exclude the 'password' field
+    })
 
-  const pharmacist = await User.findById(pharmacistId);
-
-  if (!pharmacist || pharmacist.role !== "pharmacist") {
-    throw new Error("Unknown pharmacist");
-  }
-
-  const completed = req.body.completed;
-
-  if (completed) {
-    const allMedicines = await Promise.all(
-      prescription.medicines.map(async (medicine) => {
-        medicine.isCompleted = true;
-        medicine.save();
-        return medicine;
-      })
-    );
-    prescription.medicines = allMedicines;
-  }
-  prescription.isCompleted = completed;
+  prescription.isCompleted = true;
   prescription.save();
-
-  if (!pharmacist.prescriptions.includes(prescription._id)) {
-    pharmacist.prescriptions.push(prescription._id);
-  }
-  pharmacist.save();
 
   return prescription;
 };

@@ -128,12 +128,11 @@ router.patch("/:id/complete/partial", async (req, res) => {
 router.patch("/:id/complete", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
-    const pharmacistId = req.user.id;
 
     const prescription = await completeFullPrescription(
       prescriptionId,
-      pharmacistId
     );
+
     res.status(201).json(prescription);
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
