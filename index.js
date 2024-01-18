@@ -10,6 +10,10 @@ dbConnector()
     const config = require('./config/config')
     const errorHandler = require('./utils/errorHandler');
     const app = require('express')();
+
+    app.use(cors(config.origin));
+
+
     require('./config/express')(app);
     
     app.use(cors({

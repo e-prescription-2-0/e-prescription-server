@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 // This function will attach the pre-save hook to the given schema
 function PasswordPreSaveHook(userSchema) {
@@ -8,8 +8,8 @@ function PasswordPreSaveHook(userSchema) {
     if (!user.isModified("password")) return next();
 
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(user.password, salt);
+      const salt = await bcryptjs.genSalt(10);
+      const hash = await bcryptjs.hash(user.password, salt);
       user.password = hash;
       next();
     } catch (error) {
