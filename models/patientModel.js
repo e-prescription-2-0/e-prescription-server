@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
-const User = require("./userModel");
+const User = require("./userModel")
 
 const PatientProfileSchema = new Schema({
   patientId: {
@@ -9,16 +9,22 @@ const PatientProfileSchema = new Schema({
     unique: true,
     required: true,
   },
-  gender: {
-    type: String,
-    enum: ["Male", "Female"],
-    require: true,
-  },
+  prescriptions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Prescription", // Reference the User model
+    },
+  ],
   dateOfBirth: {
     type: Date,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female"],
+    required: true,
   },
   patientSpecifics: [],
- 
-});
+})
 
-module.exports = User.discriminator("Patient", PatientProfileSchema);
+module.exports = User.discriminator("Patient", PatientProfileSchema)

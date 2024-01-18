@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
-const User = require("./userModel");
+const User = require("./userModel")
 
 const PharmacistProfileSchema = new Schema({
   pharmacistId: {
@@ -14,7 +14,6 @@ const PharmacistProfileSchema = new Schema({
     required: true,
   },
   patients: [],
+})
 
-});
-
-module.exports = User.discriminator("Pharmacist", PharmacistProfileSchema);
+module.exports = User.discriminator("Pharmacist", PharmacistProfileSchema)

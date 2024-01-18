@@ -1,4 +1,5 @@
 const express = require("express");
+const accesRouteGuard = require("../middlewares/accessRouteGuard");
 const router = express.Router();
 
 const testData = {
@@ -8,7 +9,9 @@ const testData = {
   main: "index.js",
 };
 
-router.get("/", function (req, res) {
+//example for using middleware
+
+router.get("/", accesRouteGuard('patient'), function (req, res) {
   console.log("Hello from test router");
   res.send(testData);
 });
