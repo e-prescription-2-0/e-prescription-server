@@ -63,8 +63,9 @@ router.delete("/:id/delete", async (req, res) => {
     if (!prescription) {
       throw new Error("Prescription not found");
     }
-
-    res.json({ message: "Prescription deleted successfully" });
+    
+    res.status(201).json(prescription);
+    // res.json({ message: "Prescription deleted successfully" });
   } catch (error) {
     const errorMessage = error.message || "Internal Server Error";
     res.status(500).json({ message: errorMessage });
