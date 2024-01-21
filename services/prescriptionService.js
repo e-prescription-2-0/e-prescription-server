@@ -159,11 +159,11 @@ const completePartialPrescription = async (
   const prescription = await Prescription.findById(prescriptionId).populate(
     "medicines"
   );
-  const pharmacist = await User.findById(pharmacistId);
+  // const pharmacist = await User.findById(pharmacistId);
 
-  if (!pharmacist || pharmacist.role !== "pharmacist") {
-    throw new Error("Unknown pharmacist");
-  }
+  // if (!pharmacist || pharmacist.role !== "pharmacist") {
+  //   throw new Error("Unknown pharmacist");
+  // }
 
   if (!prescription) {
     throw new Error("Prescription not found");
@@ -196,10 +196,10 @@ const completePartialPrescription = async (
   }
   prescription.save();
 
-  if (!pharmacist.prescriptions.includes(prescription._id)) {
-    pharmacist.prescriptions.push(prescription._id);
-  }
-  pharmacist.save();
+  // if (!pharmacist.prescriptions.includes(prescription._id)) {
+  //   pharmacist.prescriptions.push(prescription._id);
+  // }
+  // pharmacist.save();
 
   return prescription;
 };
@@ -214,7 +214,7 @@ const completeFullPrescription = async (prescriptionId) => {
     .populate({
       path: "prescribedBy",
       select: "-password", // Exclude the 'password' field
-    })
+    });
 
   prescription.isCompleted = true;
   prescription.save();

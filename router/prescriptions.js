@@ -111,12 +111,12 @@ router.patch("/:id/complete/partial", async (req, res) => {
   try {
     const prescriptionId = req.params.id;
     const updatedMedicinesIds = req.body.medicines; // An array of updated medicines
-    const pharmacistId = req.user.id;
+    // const pharmacistId = req.user.id;
 
     const prescription = await completePartialPrescription(
       prescriptionId,
       updatedMedicinesIds,
-      pharmacistId
+      // pharmacistId
     );
 
     res.json(prescription);
