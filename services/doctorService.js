@@ -70,10 +70,10 @@ const addPatientToDoctorList = async (patientId, doctorId) => {
     throw new Error("Unknown patient or doctor");
   }
 
-  doctor.patients.push(doctor._id);
+  doctor.patients.push(patientId);
   doctor.save();
 
-  return doctor.patients;
+  return doctor;
 };
 
 const removePatientFromDoctorList = async (patientId, doctorId) => {
