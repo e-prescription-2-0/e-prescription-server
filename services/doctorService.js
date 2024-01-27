@@ -77,16 +77,17 @@ const addPatientToDoctorList = async (patientId, doctorId) => {
 };
 
 const removePatientFromDoctorList = async (patientId, doctorId) => {
-  const patient = await User.findById(patientId);
+ 
   const doctor = await User.findById(doctorId);
 
-  if (!patient || !doctor) {
+  if (!doctor) {
     throw new Error("Unknown patient or doctor");
   }
+  
 
-  doctor.patients.splice(doctor.patient.indexOf(patient._id), 1);
+  doctor.patients.splice(doctor.patients.indexOf(patientId), 1);
   doctor.save();
-  return doctor.patients;
+  return doctor;
 };
 
 module.exports = {
