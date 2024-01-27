@@ -1,4 +1,4 @@
-const userTokenName = 'access-token';
+const userTokenName = 'accessToken';
 
 
 module.exports = {
