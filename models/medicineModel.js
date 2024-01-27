@@ -10,13 +10,25 @@ const MedicineSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Prescription",
   },
-  signature: {
+  instructions: {
     type: String,
     required: false,
   },
   isCompleted: {
     type: Boolean,
     default: false,
+  },
+  dosageType: {
+    type: String
+  },
+  dosage: {
+    type: String
+  },
+  admissionType: {
+    type: String
+  },
+  admission: {
+    type: String
   },
 });
 
