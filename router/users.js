@@ -148,8 +148,6 @@ router.delete("/:doctorId/patients/remove/:patientId", async (req, res) => {
   const doctorId = req.params.doctorId
   const patientId = req.params.patientId
 
-  console.log('sdasd', doctorId);
-  console.log('sdasd', patientId);
 
   try {
     const doctorPatientsList = await removePatientFromDoctorList(
