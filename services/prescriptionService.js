@@ -95,9 +95,7 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
   await patient.save();
   await doctor.save();
 
-  return prescription
-    .populate("prescribedBy")
-    .populate("prescribedTo");
+  return prescription;
 };
 
 const deletePrescription = async (prescriptionId) => {
