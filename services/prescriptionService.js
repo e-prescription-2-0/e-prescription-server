@@ -71,14 +71,6 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
     prescribedTo,
     prescribedBy,
   })
-    .populate({
-      path: "prescribedTo",
-      select: "-password", // Exclude the 'password' field
-    })
-    .populate({
-      path: "prescribedBy",
-      select: "-password", // Exclude the 'password' field
-    });
 
   if (!prescription) {
     throw new Error("Error creating prescription");
@@ -103,7 +95,9 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
   await patient.save();
   await doctor.save();
 
-  return prescription;
+  return prescription
+    .populate("prescribedBy")
+    .populate("prescribedTo");
 };
 
 const deletePrescription = async (prescriptionId) => {
