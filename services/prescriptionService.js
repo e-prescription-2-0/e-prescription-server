@@ -70,7 +70,9 @@ const createPrescription = async (prescribedBy, prescribedTo, medicines) => {
     prescriptionId: rxNumber,
     prescribedTo,
     prescribedBy,
-  });
+  })
+    .populate("prescribedTo")
+    .populate("prescribedBy")
 
   if (!prescription) {
     throw new Error("Error creating prescription");
