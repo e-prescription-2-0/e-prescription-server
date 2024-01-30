@@ -2,12 +2,17 @@ const bcrypt = require("bcrypt")
 const { createToken } = require("../utils/jwt")
 const { userTokenName } = require("../config/app-config")
 
+const User = require("../models/userModel");
+
+
 const UserTypes = {
   doctor: require("../models/doctorModel"),
   pharmacist: require("../models/pharmacistModel"),
   patient: require("../models/patientModel"),
   user: require("../models/userModel"),
 }
+
+
 
 const register = async (
   firstName,
@@ -72,7 +77,12 @@ const removePassword = (data) => {
   return userData
 }
 
+const getUserPrescriptions = async (id) =>  await User.findById(id)
+    .populate("prescriptions")
+    .select("prescriptions");
+
 module.exports = {
   register,
   login,
+  getUserPrescriptions
 }
