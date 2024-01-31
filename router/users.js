@@ -68,9 +68,10 @@ router.post("/logout", auth, (req, res, next) => {
   res.status(204).json({ message: "Logged out successfully" });
 });
 
-router.get("/prescriptions", auth, (req, res, next) => {
-  const prescriptions = getUserPrescriptions(req.decodedToken._id);
-  res.status(200).json(prescriptions);
+router.get("/prescriptions", auth, async (req, res, next) => {
+  const data = await getUserPrescriptions(req.decodedToken._id);
+  console.log(data.prescriptions);
+  res.status(200).json(data.prescriptions);
 });
 
 router.delete("/:userId/delete", async (req, res) => {
